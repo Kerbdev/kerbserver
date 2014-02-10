@@ -2,7 +2,7 @@
 #include <string.h>
 #include <time.h>
 #include <math.h>
-char* hashsum(char*)
+char* hashsum(void)
 {
 	return "4hi3hi354rji4j4i4joj";
 }
@@ -36,12 +36,12 @@ char* KRB_AP_ERR_TKT_EXPIRED_CHECK(time_t ticket_start, time_t ticket_end)
 			return "KRB_AP_ERR_TKT_EXPIRED";
 		else return "";
 	}
-char* KRB_AP_ERR_BAD_INTEGRITY_CHECK(char* field, char* hash)
-	{
-		if(!(hashsum(field) == hash))
-			return "KRB_AP_ERR_BAD_INTEGRITY";
-		else return "";
-	}
+//char* KRB_AP_ERR_BAD_INTEGRITY_CHECK(char* field, char* hash)
+	//{
+	//	if(!(hashsum(field) == hash))
+	//		return "KRB_AP_ERR_BAD_INTEGRITY";
+	//	else return "";
+	//}
 char* KRB_AP_ERR_TKT_NYV_CHECK(time_t server_time, time_t ticket_time, int TICKET_VALID, double TIME_SKEW)
 	{
 		if (((difftime(server_time, ticket_time) < 0.0) && difftime(server_time, ticket_time) > TIME_SKEW) || (TICKET_VALID == 1))
@@ -58,7 +58,8 @@ char* KRB_AP_ERR_SKEW_CHECK(time_t server_time, time_t client_time, double TIME_
 	{
 		if(fabs(difftime(server_time, client_time)) > TIME_SKEW)
 			return "KRB_AP_ERR_SKEW";
-		else "";
+		else
+			return "";
 	}
 char* KRB_AP_ERR_BADADDR_CHECK(char* IP_CURR, char* IP_SET)
 	{

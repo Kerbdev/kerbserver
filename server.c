@@ -43,9 +43,6 @@ int main(void)
     printf("Encode:%s\n",en);
     base64_decode((const BYTE *)den ,(BYTE *)en, sizeof(den));
     printf("Decode:%s",en);
-while(1){
-    sdddd();
-}
 
     memset(&hints, 0, sizeof hints);
     hints.ai_family = AF_UNSPEC;

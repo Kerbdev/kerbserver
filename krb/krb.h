@@ -51,6 +51,8 @@ struct KRB_KDC_REP{
 
 }
 
+//KRB_ERROR
+
 
 
 

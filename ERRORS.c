@@ -4,6 +4,7 @@
 #include <math.h>
 char* hashsum(char*)
 {
+	return "4hi3hi354rji4j4i4joj";
 }
 char* KDC_ERR_C_PRINCIPAL_UNKNOWN_CHECK(char* Client, char* Principal)
 	{
@@ -76,4 +77,17 @@ char* KRB_AP_ERR_MSG_TYPE(char MSG_CURR, char MSG_SET)
 		if(!(MSG_CURR == MSG_SET))
 			return "KRB_AP_ERR_MSG_TYPE";
 		else return "";
+	}
+char* KRB_AP_ERR_MODIFIED_CHECK(char* req_cname, char* resp_cname, char* req_realm, char* resp_crealm, char* req_sname, char* resp_sname, char* resp_realm, char* req_nonce, char* resp_nonce, char* req_addresses, char* resp_caddr)
+	{
+		if (/*decryption_error() or*/
+            (req_cname != resp_cname) ||
+            (req_realm != resp_crealm) ||
+            (req_sname != resp_sname) ||
+            (req_realm != resp_realm) ||
+            (req_nonce != resp_nonce) ||
+            (req_addresses != resp_caddr))
+                return "KRB_AP_ERR_MODIFIED";
+		else return "";
+				
 	}

@@ -29,7 +29,8 @@ typedef struct KDC_REQ_BODY{
 	int enc_auth_data;
 	int add_tickets;
 }KDC_REQ_BODY;
-
+//comment 1 12 3 42 2
+//comment23 24
 struct KRB_KDC_REQ{
 	int req_type;
 	KDC_REQ kdc_req;
@@ -39,10 +40,9 @@ typedef struct {
 	int pvno;
 	int msg_type;
 
-
-
 }
-
+//f3efe
+//wefwefwe
 
 
 struct KRB_KDC_REP{

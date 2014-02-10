@@ -1,6 +1,8 @@
 #include "query/request.h"
 #include "parser/get_config_param.h"
-
+#include "Encode/base64.h"
+#include "database/log.h"
+#include "database/user_pass.h"
 #define PORT "3490"  // порт, на который будут приходить соединения
 
 
@@ -29,21 +31,31 @@ int main(void)
     int yes=1;
     char s[INET6_ADDRSTRLEN];
     int rv;
+    char en[250]="Hello USER";
+    char den[250];
     char user_name[MAXDATASIZE];
     char ID_TGS[MAXDATASIZE];
     char date_time[MAXDATASIZE];
     configuration conf;
     get_config_param(&conf);
 
+    base64_encode((const BYTE *)en, (BYTE *)den, sizeof(en),1);
+    printf("Encode:%s\n",en);
+    base64_decode((const BYTE *)den ,(BYTE *)en, sizeof(den));
+    printf("Decode:%s",en);
+while(1){
+    sdddd();
+}
+
     memset(&hints, 0, sizeof hints);
     hints.ai_family = AF_UNSPEC;
     hints.ai_socktype = SOCK_STREAM;
     hints.ai_flags = AI_PASSIVE; // use my IP
-
     if ((rv = getaddrinfo(NULL, PORT, &hints, &servinfo)) != 0) {
         fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
         return 1;
     }
+
 
     // цикл через все результаты, чтобы забиндиться на первом возможном
     for(p = servinfo; p != NULL; p = p->ai_next) {

@@ -88,6 +88,11 @@ char* KRB_AP_ERR_MODIFIED_CHECK(char* req_cname, char* resp_cname, char* req_rea
             (req_nonce != resp_nonce) ||
             (req_addresses != resp_caddr))
                 return "KRB_AP_ERR_MODIFIED";
+		else return "";		
+	}
+char* KRB_AP_ERR_INAPP_CKSUM_CHECK(char* ck_type_set, char* ck_type_curr)
+	{
+		if(!(ck_type_curr == ck_type_set))
+			return "KRB_AP_ERR_INAPP_CKSUM";
 		else return "";
-				
 	}

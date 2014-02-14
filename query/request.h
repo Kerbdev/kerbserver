@@ -7,9 +7,8 @@
 
 #ifndef REQUEST_H_
 #define REQUEST_H_
-
-#include "request.h"
 #include <stdio.h>
+#include "../krb/krb.h"
 #include <stdlib.h>
 #include <unistd.h>
 #include <errno.h>
@@ -54,5 +53,5 @@ void Connect_from_service(int new_fd,struct AUTH_CLIENT NEW_AUTH,struct SERVICE_
 void TGS_REP(int new_fd,struct TICKET ticket,struct SERVICE_TICKET service_ticket);
 void TGS_RECV(int sockfd,char *id_service,struct TGT tgt,struct AUTH_CLIENT AUTH);
 void AS_REP(int new_fd,char *session_key_client_tgs_secret,char *id_server_secret,int time_live_secret,struct TGT *tgt);
-void client_to_AS_REP(int new_fd,char *date_time,char *user_name,char *ID_TGS,char *FLAGS);
+void client_to_AS_REP(int new_fd,char *date_time,char *user_name,krb5_kdc_req *as_rep,char *FLAGS);
 #endif /* REQUEST_H_ */

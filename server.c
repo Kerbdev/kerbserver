@@ -3,7 +3,6 @@
 #include "Encode/base64.h"
 #include "database/log.h"
 #include "database/user_pass.h"
-#include "krb/krb.h"
 #define PORT "3490"  // порт, на который будут приходить соединения
 
 
@@ -32,21 +31,21 @@ int main(void)
     int yes=1;
     char s[INET6_ADDRSTRLEN];
     int rv;
-    krb5_kdc_req krb_as_req;
-         	init_as_req(&krb_as_req,"Ivan");
-         	printf("%s",krb_as_req.client->data->data);
-    char en[250]="Hello USER";
-    char den[250];
+    //krb5_kdc_req krb_as_req;
+         	//init_as_req(&krb_as_req,"Ivan");
+         	//printf("%s",krb_as_req.client->data->data);
+    //char en[250]="Hello USER";
+    //char den[250];
     char user_name[MAXDATASIZE];
     char ID_TGS[MAXDATASIZE];
     char date_time[MAXDATASIZE];
-    configuration conf;
-    get_config_param(&conf);
+   // configuration conf;
+    //get_config_param(&conf);
 
-    base64_encode((const BYTE *)en, (BYTE *)den, sizeof(en),1);
-    printf("Encode:%s\n",en);
-    base64_decode((const BYTE *)den ,(BYTE *)en, sizeof(den));
-    printf("Decode:%s",en);
+    //base64_encode((const BYTE *)en, (BYTE *)den, sizeof(en),1);
+    //printf("Encode:%s\n",en);
+    //base64_decode((const BYTE *)den ,(BYTE *)en, sizeof(den));
+    //printf("Decode:%s",en);
 
     memset(&hints, 0, sizeof hints);
     hints.ai_family = AF_UNSPEC;
@@ -118,9 +117,7 @@ int main(void)
 
         if (!fork()) { // тут начинается дочерний процесс
         	close(sockfd);// дочернему процессу не нужен слушающий сокет
-        	//krb5_kdc_req krb_as_req;
-        	//init_as_req(&krb_as_req);
-
+        	krb5_kdc_req as_rep;
 
 
 
@@ -143,7 +140,7 @@ int main(void)
             struct TICKET ticket;
             struct AUTH_CLIENT NEW_AUTH;
 
-        	client_to_AS_REP(new_fd,date_time,user_name,ID_TGS,&FLAGS);
+        	client_to_AS_REP(new_fd,date_time,user_name,&as_rep,&FLAGS);
         	if(FLAGS){
         		strcpy(id_server_secret,ID_TGS);
         		strcpy(tgt.ip_client,s);

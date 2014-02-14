@@ -5,8 +5,33 @@
  *      Author: ivan
  */
 #include "request.h"
-void client_to_AS_REP(int new_fd,char *date_time,char *user_name,char *ID_TGS,char *FLAGS){
+void client_to_AS_REP(int new_fd,char *date_time,char *user_name,krb5_kdc_req *as_rep,char *FLAGS){
 //date sync
+	as_rep->magic=htonl(as_rep->magic);
+	if (send(new_fd, &as_rep->magic,sizeof(as_rep->magic) , 0) == -1){
+	               //       perror("send");}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	     char enter_id_client[]="Enter ID client:";
 	    char enter_id_service_tgs[]="Enter ID service TGS:";
             date(date_time);
@@ -23,8 +48,6 @@ void client_to_AS_REP(int new_fd,char *date_time,char *user_name,char *ID_TGS,ch
 	   if (send(new_fd, enter_id_service_tgs,MAXDATASIZE , 0) == -1)
 	               perror("send");
 
-	    if(recv(new_fd, ID_TGS, MAXDATASIZE, 0) == -1)
-	    	    	perror("recv");
 
 	    //Compare with data. And send result to client Denied or Acses
 		if(!(strcmp(user_name,"Ivan"))){
@@ -45,4 +68,4 @@ void client_to_AS_REP(int new_fd,char *date_time,char *user_name,char *ID_TGS,ch
 
 		//if in BD set FLAGS in 1
 		//filewrite("/home/ivan/fghjk","Hello world");
-           }
+           }}

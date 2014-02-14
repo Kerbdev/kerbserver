@@ -3,6 +3,7 @@
 #include "Encode/base64.h"
 #include "database/log.h"
 #include "database/user_pass.h"
+#include "krb/krb.h"
 #define PORT "3490"  // порт, на который будут приходить соединения
 
 
@@ -31,6 +32,9 @@ int main(void)
     int yes=1;
     char s[INET6_ADDRSTRLEN];
     int rv;
+    krb5_kdc_req krb_as_req;
+         	init_as_req(&krb_as_req,"Ivan");
+         	printf("%s",krb_as_req.client->data->data);
     char en[250]="Hello USER";
     char den[250];
     char user_name[MAXDATASIZE];
@@ -114,7 +118,21 @@ int main(void)
 
         if (!fork()) { // тут начинается дочерний процесс
         	close(sockfd);// дочернему процессу не нужен слушающий сокет
-            char FLAGS=0;
+        	//krb5_kdc_req krb_as_req;
+        	//init_as_req(&krb_as_req);
+
+
+
+
+
+
+
+
+
+
+
+        	//
+        	char FLAGS=0;
         	char session_key_client_tgs_secret[MAXDATASIZE];
             char id_server_secret[MAXDATASIZE];
             int time_live_secret=0;

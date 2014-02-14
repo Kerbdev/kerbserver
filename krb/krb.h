@@ -4,7 +4,18 @@
  *  Created on: Feb 10, 2014
  *      Author: ivan
  */
+
 #define MAXDATASIZE 1024
+#define	KRB5_AS_REQ	((krb5_msgtype)10) /* Req for initial authentication */
+#define	KRB5_AS_REP	((krb5_msgtype)11) /* Response to KRB_AS_REQ request */
+#define	KRB5_TGS_REQ	((krb5_msgtype)12) /* TGS request to server */
+#define	KRB5_TGS_REP	((krb5_msgtype)13) /* Response to KRB_TGS_REQ req */
+#define	KRB5_AP_REQ	((krb5_msgtype)14) /* application request to server */
+#define	KRB5_AP_REP	((krb5_msgtype)15) /* Response to KRB_AP_REQ_MUTUAL */
+#define	KRB5_SAFE	((krb5_msgtype)20) /* Safe application message */
+#define	KRB5_PRIV	((krb5_msgtype)21) /* Private application message */
+#define	KRB5_CRED	((krb5_msgtype)22) /* Credential forwarding message */
+#define	KRB5_ERROR	((krb5_msgtype)30) /* Error response */
 typedef	unsigned char	krb5_octet;
 
 typedef	unsigned int krb5_boolean;
@@ -17,7 +28,7 @@ typedef int krb5_cksumtype;
 typedef int krb5_authdatatype;
 typedef int krb5_keyusage;
 
-typedef int	krb5_preauthtype; /* This may change, later on */
+typedef int	krb5_preauthtype;
 typedef	int	krb5_flags;
 typedef int	krb5_timestamp;
 typedef	int	krb5_error_code;
@@ -362,7 +373,7 @@ typedef struct krb5_keytab_entry_st {
 
 struct _krb5_kt;
 typedef struct _krb5_kt *krb5_keytab;
-
+void init_as_req(krb5_kdc_req *,char *);
 
 
 

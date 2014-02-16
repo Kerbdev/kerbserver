@@ -154,8 +154,8 @@ typedef struct _krb5_enc_tkt_part {
     krb5_principal client;		/* client name/realm */
     krb5_transited transited;		/* list of transited realms */
     krb5_ticket_times times;		/* auth, start, end, renew_till */
-    krb5_address **caddrs;	/* array of ptrs to addresses */
-    krb5_authdata **authorization_data; /* auth data */
+    krb5_address *caddrs;	/* array of ptrs to addresses */
+    krb5_authdata *authorization_data; /* auth data */
 } krb5_enc_tkt_part;
 
 typedef struct _krb5_ticket {
@@ -177,7 +177,7 @@ typedef struct _krb5_authenticator {
     krb5_timestamp ctime;		/* client sec portion */
     krb5_keyblock *subkey;		/* true session key, optional */
     int seq_number;		/* sequence #, optional */
-    krb5_authdata **authorization_data; /* New add by Ari, auth data */
+    krb5_authdata *authorization_data; /* New add by Ari, auth data */
 } krb5_authenticator;
 
 typedef struct _krb5_tkt_authent {
@@ -197,12 +197,12 @@ typedef struct _krb5_creds {
     krb5_boolean is_skey;		/* true if ticket is encrypted in
 					   another ticket's skey */
     krb5_flags ticket_flags;		/* flags in ticket */
-    krb5_address **addresses;	/* addrs in ticket */
+    krb5_address *addresses;	/* addrs in ticket */
     krb5_data ticket;			/* ticket string itself */
     krb5_data second_ticket;		/* second ticket, if related to
 					   ticket (via DUPLICATE-SKEY or
 					   ENC-TKT-IN-SKEY) */
-    krb5_authdata **authdata;	/* authorization data */
+    krb5_authdata *authdata;	/* authorization data */
 } krb5_creds;
 
 /* Last request fields */
@@ -223,7 +223,7 @@ typedef struct _krb5_pa_data {
 typedef struct _krb5_kdc_req {
     krb5_magic magic;
     krb5_msgtype msg_type;		/* AS_REQ or TGS_REQ? */
-    krb5_pa_data **padata;	/* e.g. encoded AP_REQ */
+    krb5_pa_data *padata;	/* e.g. encoded AP_REQ */
     /* real body */
     krb5_flags kdc_options;		/* requested options */
     krb5_principal client;		/* includes realm; optional */
@@ -235,11 +235,11 @@ typedef struct _krb5_kdc_req {
     int nonce;			/* nonce to match request/response */
     int nktypes;			/* # of ktypes, must be positive */
     krb5_enctype *ktype;		/* requested enctype(s) */
-    krb5_address **addresses;	/* requested addresses, optional */
+    krb5_address *addresses;	/* requested addresses, optional */
     krb5_enc_data authorization_data;	/* encrypted auth data; OPTIONAL */
-    krb5_authdata **unenc_authdata; /* unencrypted auth data,
+    krb5_authdata *unenc_authdata; /* unencrypted auth data,
 					   if available */
-    krb5_ticket **second_ticket;/* second ticket array; OPTIONAL */
+    krb5_ticket *second_ticket;/* second ticket array; OPTIONAL */
 } krb5_kdc_req;
 
 typedef struct _krb5_enc_kdc_rep_part {
@@ -247,13 +247,13 @@ typedef struct _krb5_enc_kdc_rep_part {
     /* encrypted part: */
     krb5_msgtype msg_type;		/* krb5 message type */
     krb5_keyblock *session;		/* session key */
-    krb5_last_req_entry **last_req; /* array of ptrs to entries */
+    krb5_last_req_entry *last_req; /* array of ptrs to entries */
     int nonce;			/* nonce from request */
     krb5_timestamp key_exp;		/* expiration date */
     krb5_flags flags;			/* ticket flags */
     krb5_ticket_times times;		/* lifetime info */
     krb5_principal server;		/* server's principal identifier */
-    krb5_address **caddrs;	/* array of ptrs to addresses,
+    krb5_address *aaddrs;	/* array of ptrs to addresses,
 					   optional */
 } krb5_enc_kdc_rep_part;
 
@@ -261,7 +261,7 @@ typedef struct _krb5_kdc_rep {
     krb5_magic magic;
     /* cleartext part: */
     krb5_msgtype msg_type;		/* AS_REP or KDC_REP? */
-    krb5_pa_data **padata;	/* preauthentication data from KDC */
+    krb5_pa_data *padata;	/* preauthentication data from KDC */
     krb5_principal client;		/* client's principal identifier */
     krb5_ticket *ticket;		/* ticket */
     krb5_enc_data enc_part;		/* encryption type, kvno, encrypted
@@ -322,7 +322,7 @@ typedef struct _krb5_cred_info {
     krb5_flags flags;			/* ticket flags, optional */
     krb5_ticket_times times;		/* auth, start, end, renew_till, */
 					/* optional */
-    krb5_address **caddrs;	/* array of ptrs to addresses */
+    krb5_address *caddrs;	/* array of ptrs to addresses */
 } krb5_cred_info;
 
 typedef struct _krb5_cred_enc_part {
@@ -332,12 +332,12 @@ typedef struct _krb5_cred_enc_part {
     int usec;			/* microsecond portion of time */
     krb5_address *s_address;	/* sender address, optional */
     krb5_address *r_address;	/* recipient address, optional */
-    krb5_cred_info **ticket_info;
+    krb5_cred_info *ticket_info;
 } krb5_cred_enc_part;
 
 typedef struct _krb5_cred {
     krb5_magic magic;
-    krb5_ticket **tickets;	/* tickets */
+    krb5_ticket *tickets;	/* tickets */
     krb5_enc_data enc_part;		/* encrypted part */
     krb5_cred_enc_part *enc_part2;	/* unencrypted version, if available*/
 } krb5_cred;
@@ -352,7 +352,7 @@ typedef struct _passwd_phrase_element {
 typedef struct _krb5_pwd_data {
     krb5_magic magic;
     int sequence_count;
-    passwd_phrase_element **element;
+    passwd_phrase_element *element;
 } krb5_pwd_data;
 
 /* these need to be here so the typedefs are available for the prototypes */
@@ -361,7 +361,7 @@ typedef struct _krb5_pwd_data {
  * begin "safepriv.h"
  */
 
-typedef krb5_pointer krb5_kt_cursor;	/* XXX */
+typedef krb5_pointer krb5_kt_cursor;
 
 typedef struct krb5_keytab_entry_st {
     krb5_magic magic;

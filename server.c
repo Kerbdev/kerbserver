@@ -32,7 +32,7 @@ int main(void)
     char s[INET6_ADDRSTRLEN];
     int rv;
     //krb5_kdc_req krb_as_req;
-         	//init_as_req(&krb_as_req,"Ivan");
+         //init_as_req(&krb_as_req,"Ivan");
          	//printf("%s",krb_as_req.client->data->data);
     //char en[250]="Hello USER";
     //char den[250];
@@ -117,8 +117,13 @@ int main(void)
 
         if (!fork()) { // тут начинается дочерний процесс
         	close(sockfd);// дочернему процессу не нужен слушающий сокет
-        	krb5_kdc_req as_rep;
-
+        	krb5_kdc_req *as_rep=malloc(sizeof(krb5_kdc_req));
+        	as_rep->padata=malloc(sizeof(krb5_pa_data));
+        	as_rep->client->data=malloc(sizeof(krb5_data));
+        	as_rep->addresses=malloc(sizeof(krb5_address));
+        	as_rep->unenc_authdata=malloc(sizeof(krb5_authdata));
+        	as_rep->second_ticket=malloc(sizeof(krb5_ticket));
+        	memset(as_rep,0,sizeof(*as_rep));
 
 
 
@@ -140,7 +145,7 @@ int main(void)
             struct TICKET ticket;
             struct AUTH_CLIENT NEW_AUTH;
 
-        	client_to_AS_REP(new_fd,date_time,user_name,&as_rep,&FLAGS);
+        	client_to_AS_REP(new_fd,date_time,user_name,as_rep,&FLAGS);
         	if(FLAGS){
         		strcpy(id_server_secret,ID_TGS);
         		strcpy(tgt.ip_client,s);

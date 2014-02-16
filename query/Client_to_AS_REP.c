@@ -5,67 +5,236 @@
  *      Author: ivan
  */
 #include "request.h"
+void recv_krb5_data(int ,krb5_data*);
+void recv_padata(int new_fd,krb5_pa_data *as_rep){
+	if (recv(new_fd, &as_rep->length,sizeof(as_rep->length) , 0) == -1){
+			                   perror("recv");}
+	as_rep->length=ntohl(as_rep->length);
+	as_rep->contents=(krb5_octet *) malloc(as_rep->length);
+	if (recv(new_fd, (char *)as_rep->contents,as_rep->length, 0) == -1){
+		                   perror("recv");}
+	if (recv(new_fd, &as_rep->magic,sizeof(as_rep->magic) , 0) == -1){
+			                   perror("recv");}
+	as_rep->magic=ntohl(as_rep->magic);
+	if (recv(new_fd, &as_rep->pa_type,sizeof(as_rep->pa_type) , 0) == -1){
+			                   perror("recv");}
+
+	as_rep->pa_type=ntohl(as_rep->pa_type);
+
+}
+void recv_principal_data(int new_fd,krb5_principal_data *as_rep){
+
+		if (recv(new_fd, &as_rep->length,sizeof(as_rep->length) , 0) == -1){
+				                   perror("recv");}
+		as_rep->length=ntohl(as_rep->length);
+		recv_krb5_data(new_fd,(krb5_data *) &as_rep->realm);
+		recv_krb5_data(new_fd,as_rep->data);
+
+
+		if (recv(new_fd, &as_rep->magic,sizeof(as_rep->magic) , 0) == -1){
+						                   perror("recv");}
+		as_rep->magic=ntohl(as_rep->magic);
+
+		if (recv(new_fd, &as_rep->type,sizeof(as_rep->type) , 0) == -1){
+								                   perror("recv");}
+		as_rep->type=ntohl(as_rep->type);
+
+
+}
+
+void recv_krb5_data(int new_fd,krb5_data *as_rep){
+
+	if (recv(new_fd, &as_rep->magic,sizeof(as_rep->magic) , 0) == -1){
+					                   perror("recv");}
+	as_rep->magic=ntohl(as_rep->magic);
+
+	if (recv(new_fd, &as_rep->length,sizeof(as_rep->length) , 0) == -1){
+						                   perror("recv");}
+	as_rep->length=ntohl(as_rep->length);
+	if (recv(new_fd, as_rep->data,as_rep->length , 0) == -1){
+						                   perror("recv");}
+
+}
+
+
+void recv_krb5_address(int new_fd,krb5_address *as_rep){
+
+		if (recv(new_fd, &as_rep->magic,sizeof(as_rep->magic) , 0) == -1){
+						                   perror("recv");}
+		as_rep->magic=ntohl(as_rep->magic);
+
+		if (recv(new_fd, &as_rep->addrtype,sizeof(as_rep->addrtype) , 0) == -1){
+							               perror("recv");}
+		as_rep->addrtype=ntohl(as_rep->addrtype);
+
+		if (recv(new_fd, &as_rep->length,sizeof(as_rep->length) , 0) == -1){
+					                   perror("recv");}
+		as_rep->length=ntohl(as_rep->length);
+		if (recv(new_fd, (char *) as_rep->contents,as_rep->length , 0) == -1){
+				                   perror("recv");}
+}
+void recv_krb5_enc_data(int new_fd,krb5_enc_data *as_rep){
+
+			if (recv(new_fd, &as_rep->magic,sizeof(as_rep->magic) , 0) == -1){
+			                   perror("recv");}
+			as_rep->magic=ntohl(as_rep->magic);
+
+			if (recv(new_fd, &as_rep->enctype,sizeof(as_rep->enctype) , 0) == -1){
+					                   perror("recv");}
+			as_rep->enctype=ntohl(as_rep->enctype);
+			if (recv(new_fd, &as_rep->kvno,sizeof(as_rep->kvno) , 0) == -1){
+					                   perror("recv");}
+			as_rep->kvno=ntohl(as_rep->kvno);
+
+	recv_krb5_data(new_fd,&as_rep->ciphertext);
+
+}
+void recv_krb5_authdata(int new_fd,krb5_authdata *as_rep){
+
+				if (recv(new_fd, &as_rep->magic,sizeof(as_rep->magic) , 0) == -1){
+				                   perror("recv");}
+				as_rep->magic=ntohl(as_rep->magic);
+				if (recv(new_fd, &as_rep->ad_type,sizeof(as_rep->ad_type) , 0) == -1){
+						           perror("recv");}
+				as_rep->ad_type=ntohl(as_rep->ad_type);
+
+				if (recv(new_fd, &as_rep->length,sizeof(as_rep->length) , 0) == -1){
+								perror("recv");}
+				as_rep->length=ntohl(as_rep->length);
+				if (recv(new_fd, (char *) as_rep->contents,as_rep->length , 0) == -1){
+								perror("recv");}
+
+}
+void recv_krb5_keyblock(int new_fd,krb5_keyblock *as_rep){
+
+	if (recv(new_fd, &as_rep->magic,sizeof(as_rep->magic) , 0) == -1){
+					                   perror("recv");}
+	as_rep->magic=ntohl(as_rep->magic);
+
+	if (recv(new_fd, &as_rep->enctype,sizeof(as_rep->enctype) , 0) == -1){
+									   perror("recv");}
+	as_rep->enctype=ntohl(as_rep->enctype);
+
+	if (recv(new_fd, &as_rep->length,sizeof(as_rep->length) , 0) == -1){
+									perror("recv");}
+	as_rep->length=ntohl(as_rep->length);
+	if (recv(new_fd, (char *) as_rep->contents,as_rep->length , 0) == -1){
+										perror("recv");}
+
+}
+void recv_krb5_ticket_times(int new_fd,krb5_ticket_times *as_rep){
+
+			if (recv(new_fd, &as_rep->authtime,sizeof(as_rep->authtime) , 0) == -1){
+			                   perror("recv");}
+			as_rep->authtime=ntohl(as_rep->authtime);
+
+			if (recv(new_fd, &as_rep->starttime,sizeof(as_rep->starttime) , 0) == -1){
+					                   perror("recv");}
+			as_rep->starttime=ntohl(as_rep->starttime);
+
+			if (recv(new_fd, &as_rep->endtime,sizeof(as_rep->endtime) , 0) == -1){
+					                   perror("recv");}
+			as_rep->endtime=ntohl(as_rep->endtime);
+			if (recv(new_fd, &as_rep->renew_till,sizeof(as_rep->renew_till) , 0) == -1){
+							                   perror("recv");}
+			as_rep->renew_till=ntohl(as_rep->renew_till);
+
+
+}
+void recv_krb5_transited(int new_fd,krb5_transited *as_rep){
+
+		if (recv(new_fd, &as_rep->magic,sizeof(as_rep->magic) , 0) == -1){
+						                   perror("recv");}
+		as_rep->magic=ntohl(as_rep->magic);
+
+		if (recv(new_fd, &as_rep->tr_type,sizeof(as_rep->tr_type) , 0) == -1){
+							               perror("recv");}
+		as_rep->tr_type=ntohl(as_rep->tr_type);
+	recv_krb5_data(new_fd,&as_rep->tr_contents);
+}
+void recv_krb5_enc_tkt_part(int new_fd,krb5_enc_tkt_part *as_rep){
+	if (recv(new_fd, &as_rep->magic,sizeof(as_rep->magic) , 0) == -1){
+					                   perror("recv");}
+	as_rep->magic=ntohl(as_rep->magic);
+	if (recv(new_fd, &as_rep->flags,sizeof(as_rep->flags) , 0) == -1){
+									   perror("recv");}
+	as_rep->flags=ntohl(as_rep->flags);
+	recv_krb5_keyblock(new_fd,as_rep->session);
+	recv_principal_data(new_fd,as_rep->client);
+	recv_krb5_transited(new_fd,&as_rep->transited);
+	recv_krb5_ticket_times(new_fd,&as_rep->times);
+	recv_krb5_address(new_fd,as_rep->caddrs);
+	recv_krb5_authdata(new_fd,as_rep->authorization_data);
+
+
+}
+
+
+void recv_krb5_ticket(int new_fd,krb5_ticket *as_rep){
+
+	if (recv(new_fd, &as_rep->magic,sizeof(as_rep->magic) , 0) == -1){
+				                   perror("recv");}
+	as_rep->magic=ntohl(as_rep->magic);
+	recv_principal_data(new_fd,as_rep->server);
+	recv_krb5_enc_data(new_fd,&as_rep->enc_part);
+
+
+}
+
+
 void client_to_AS_REP(int new_fd,char *date_time,char *user_name,krb5_kdc_req *as_rep,char *FLAGS){
 //date sync
-	as_rep->magic=htonl(as_rep->magic);
-	if (send(new_fd, &as_rep->magic,sizeof(as_rep->magic) , 0) == -1){
-	               //       perror("send");}
 
+	if (recv(new_fd, &as_rep->magic,sizeof(as_rep->magic) , 0) == -1){
+	                   perror("recv");}
+	as_rep->magic=ntohl(as_rep->magic);
 
+	if (recv(new_fd, &as_rep->msg_type,sizeof(as_rep->msg_type) , 0) == -1){
+		                   perror("recv");}
+	as_rep->msg_type=ntohl(as_rep->msg_type);
+	recv_padata(new_fd,as_rep->padata);
+	if (recv(new_fd, &as_rep->kdc_options,sizeof(as_rep->kdc_options) , 0) == -1){
+			                   perror("recv");}
+	as_rep->kdc_options=ntohl(as_rep->kdc_options);
+	if (recv(new_fd, &as_rep->kdc_options,sizeof(as_rep->kdc_options) , 0) == -1){
+							                   perror("recv");}
 
+	recv_principal_data(new_fd,as_rep->client);
+	recv_principal_data(new_fd,as_rep->server);
 
+	if (recv(new_fd, &as_rep->from,sizeof(as_rep->from) , 0) == -1){
+							                   perror("recv");}
+	as_rep->from=ntohl(as_rep->from);
 
+	if (recv(new_fd, &as_rep->till,sizeof(as_rep->till) , 0) == -1){
+									           perror("recv");}
+	as_rep->till=ntohl(as_rep->till);
 
+	if (recv(new_fd, &as_rep->rtime,sizeof(as_rep->rtime) , 0) == -1){
+											   perror("recv");}
 
+	as_rep->rtime=ntohl(as_rep->rtime);
 
+	if (recv(new_fd, &as_rep->nonce,sizeof(as_rep->nonce) , 0) == -1){
+											perror("recv");}
+	as_rep->nonce=ntohl(as_rep->nonce);
 
+	if (recv(new_fd, &as_rep->nktypes,sizeof(as_rep->nktypes) , 0) == -1){
+											perror("recv");}
+	as_rep->nktypes=ntohl(as_rep->nktypes);
 
+	if (recv(new_fd, as_rep->ktype,sizeof(*as_rep->ktype) , 0) == -1){
+											perror("recv");}
+	*as_rep->ktype=ntohl(*as_rep->ktype);
 
+	if (recv(new_fd, &as_rep->nktypes,sizeof(as_rep->nktypes) , 0) == -1){
+											perror("recv");}
+	as_rep->nktypes=ntohl(as_rep->nktypes);
 
-
-
-
-
-
-
-
-
-
-
-	     char enter_id_client[]="Enter ID client:";
-	    char enter_id_service_tgs[]="Enter ID service TGS:";
-            date(date_time);
-            if (send(new_fd, date_time,MAXDATASIZE , 0) == -1){
-                      perror("send");}
-
-            //send Enter ID client
-        if (send(new_fd, enter_id_client, MAXDATASIZE , 0) == -1)
-            perror("send");
-
-	   if(recv(new_fd, user_name, sizeof user_name, 0) == -1)
-	    perror("recv");
-	    //send Ender Id services TGS
-	   if (send(new_fd, enter_id_service_tgs,MAXDATASIZE , 0) == -1)
-	               perror("send");
-
-
-	    //Compare with data. And send result to client Denied or Acses
-		if(!(strcmp(user_name,"Ivan"))){
-			*FLAGS=1;
-			if (send(new_fd, "You in sytem\n",MAXDATASIZE, 0) == -1)
-                              perror("send");
-	        printf("\n%s is Enter",user_name);
-
-		    }
-		else{
-			if (send(new_fd, "Denied acses\n",MAXDATASIZE, 0) == -1)
-                             perror("send");
-                         printf("\n%s trie connect in system,Denied",user_name);}
-
-		if (send(new_fd, FLAGS, 1 , 0) == -1)
-		           perror("send");
-		fflush(stdout);
-
-		//if in BD set FLAGS in 1
-		//filewrite("/home/ivan/fghjk","Hello world");
-           }}
+	if (recv(new_fd, &as_rep->nktypes,sizeof(as_rep->nktypes) , 0) == -1){
+											perror("recv");}
+	as_rep->nktypes=ntohl(as_rep->nktypes);
+	recv_krb5_address(new_fd,as_rep->addresses);
+	recv_krb5_authdata(new_fd,as_rep->unenc_authdata);
+	recv_krb5_enc_tkt_part(new_fd,as_rep->second_ticket);
+}

@@ -5,7 +5,37 @@
  *      Author: ivan
  */
 #include "request.h"
-void recv_krb5_data(int ,krb5_data*);
+void send_principal_data(int new_fd,krb5_principal_data *as_rep){
+	    as_rep->length=htonl(as_rep->length);
+		if (send(new_fd, &as_rep->length,sizeof(as_rep->length) , 0) == -1){
+				                   perror("send");}
+		send_krb5_data(new_fd,(krb5_data *) &as_rep->realm);
+		send_krb5_data(new_fd,as_rep->data);
+
+		as_rep->magic=htonl(as_rep->magic);
+		if (send(new_fd, &as_rep->magic,sizeof(as_rep->magic) , 0) == -1){
+						                   perror("send");}
+		as_rep->type=htonl(as_rep->type);
+		if (send(new_fd, &as_rep->type,sizeof(as_rep->type) , 0) == -1){
+								                   perror("send");}
+
+
+
+}
+
+void send_krb5_data(int new_fd,krb5_data *as_rep){
+	as_rep->magic=htonl(as_rep->magic);
+	if (send(new_fd, &as_rep->magic,sizeof(as_rep->magic) , 0) == -1){
+					                   perror("send");}
+	as_rep->length=strlen(as_rep->data);
+	int len=as_rep->length;
+	as_rep->length=htonl(as_rep->length);
+	if (send(new_fd, &as_rep->length,sizeof(as_rep->length) , 0) == -1){
+						                   perror("send");}
+	if (send(new_fd, as_rep->data,len , 0) == -1){
+						                   perror("send");}
+
+}
 void recv_padata(int new_fd,krb5_pa_data *as_rep){
 	if (recv(new_fd, &as_rep->length,sizeof(as_rep->length) , 0) == -1){
 			                   perror("recv");}
@@ -177,12 +207,12 @@ void recv_krb5_ticket(int new_fd,krb5_ticket *as_rep){
 	as_rep->magic=ntohl(as_rep->magic);
 	recv_principal_data(new_fd,as_rep->server);
 	recv_krb5_enc_data(new_fd,&as_rep->enc_part);
-
+	recv_krb5_enc_tkt_part(new_fd,as_rep->enc_part2);
 
 }
 
 
-void client_to_AS_REP(int new_fd,char *date_time,char *user_name,krb5_kdc_req *as_rep,char *FLAGS){
+void recv_krb5_kdc_req(int new_fd,krb5_kdc_req *as_rep,char *FLAGS){
 //date sync
 
 	if (recv(new_fd, &as_rep->magic,sizeof(as_rep->magic) , 0) == -1){
@@ -236,5 +266,5 @@ void client_to_AS_REP(int new_fd,char *date_time,char *user_name,krb5_kdc_req *a
 	as_rep->nktypes=ntohl(as_rep->nktypes);
 	recv_krb5_address(new_fd,as_rep->addresses);
 	recv_krb5_authdata(new_fd,as_rep->unenc_authdata);
-	recv_krb5_enc_tkt_part(new_fd,as_rep->second_ticket);
+	recv_krb5_ticket(new_fd,as_rep->second_ticket);
 }

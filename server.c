@@ -36,9 +36,7 @@ int main(void)
          	//printf("%s",krb_as_req.client->data->data);
     //char en[250]="Hello USER";
     //char den[250];
-    char user_name[MAXDATASIZE];
-    char ID_TGS[MAXDATASIZE];
-    char date_time[MAXDATASIZE];
+    //char user_name[MAXDATASIZE];
    // configuration conf;
     //get_config_param(&conf);
 
@@ -135,26 +133,9 @@ int main(void)
 
         	//
         	char FLAGS=0;
-        	char session_key_client_tgs_secret[MAXDATASIZE];
-            char id_server_secret[MAXDATASIZE];
-            int time_live_secret=0;
-            char id_service[MAXDATASIZE];
-            struct TGT tgt;
-            struct AUTH_CLIENT AUTH;
-            struct SERVICE_TICKET service_ticket;
-            struct TICKET ticket;
-            struct AUTH_CLIENT NEW_AUTH;
 
-        	client_to_AS_REP(new_fd,date_time,user_name,as_rep,&FLAGS);
-        	if(FLAGS){
-        		strcpy(id_server_secret,ID_TGS);
-        		strcpy(tgt.ip_client,s);
-        		strcpy(tgt.user_name,user_name);
-        	AS_REP(new_fd,session_key_client_tgs_secret,id_server_secret,time_live_secret,&tgt);
-        	TGS_RECV(new_fd,id_service,tgt,AUTH);
-        	TGS_REP(new_fd,ticket,service_ticket);
-        	Connect_from_service(new_fd,NEW_AUTH,service_ticket);
-        	confirm(new_fd,NEW_AUTH);}
+        	recv_krb5_kdc_req(new_fd,as_rep,&FLAGS);
+        	if(FLAGS){}
         close(new_fd);
         	exit(0);
         }

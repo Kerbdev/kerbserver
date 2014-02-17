@@ -23,6 +23,8 @@
 #define BACKLOG 10     // как много может быть ожидающих соединений
 #define MAXDATASIZE 1024
 void recv_krb5_data(int ,krb5_data*);
+void recv_krb5_checksum(int,krb5_checksum *);
+void recv_krb5_authenticator(int,krb5_authenticator *);
 void recv_padata(int,krb5_pa_data *);
 void recv_principal_data(int,krb5_principal_data *);
 void recv_krb5_address(int,krb5_address *);

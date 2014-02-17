@@ -360,7 +360,32 @@ typedef struct _krb5_pwd_data {
 /*
  * begin "safepriv.h"
  */
+typedef struct _krb5_safe {
+    krb5_magic magic;
+    krb5_data user_data;                /* user data */
+    krb5_timestamp timestamp;           /* client time, optional */
+    int usec;                    /* microsecond portion of time,
+                                           optional */
+    int seq_number;               /* sequence #, optional */
+    krb5_address *s_address;    /* sender address */
+    krb5_address *r_address;    /* recipient address, optional */
+    krb5_checksum *checksum;    /* data integrity checksum */
+} krb5_safe;
 
+typedef struct _krb5_priv {
+    krb5_magic magic;
+    krb5_enc_data enc_part;             /* encrypted part */
+} krb5_priv;
+
+typedef struct _krb5_priv_enc_part {
+    krb5_magic magic;
+    krb5_data user_data;                /* user data */
+    krb5_timestamp timestamp;           /* client time, optional */
+    int usec;                    /* microsecond portion of time, opt. */
+    int seq_number;               /* sequence #, optional */
+    krb5_address *s_address;    /* sender address */
+    krb5_address *r_address;    /* recipient address, optional */
+} krb5_priv_enc_part;
 typedef krb5_pointer krb5_kt_cursor;
 
 typedef struct krb5_keytab_entry_st {

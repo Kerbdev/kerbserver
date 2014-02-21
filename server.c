@@ -37,9 +37,9 @@ int main(void)
     //char en[250]="Hello USER";
     //char den[250];
     //char user_name[MAXDATASIZE];
-   // configuration conf;
+    configuration conf;
     //get_config_param(&conf);
-
+conf.
     //base64_encode((const BYTE *)en, (BYTE *)den, sizeof(en),1);
     //printf("Encode:%s\n",en);
     //base64_decode((const BYTE *)den ,(BYTE *)en, sizeof(den));

@@ -29,7 +29,7 @@ typedef int krb5_authdatatype;
 typedef int krb5_keyusage;
 
 typedef int	krb5_preauthtype;
-typedef	int	krb5_flags;
+typedef	unsigned int krb5_flags;
 typedef int	krb5_timestamp;
 typedef	int	krb5_error_code;
 typedef int	krb5_deltat;

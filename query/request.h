@@ -61,7 +61,7 @@ void send_krb5_authdata(int,krb5_authdata *);
 void recv_krb5_ap_req(int,krb5_ap_req *);
 void send_krb5_ap_rep(int,krb5_ap_rep *);
 void date(char *);
-void recv_krb5_kdc_req(int new_fd,krb5_kdc_req *as_rep,char *FLAGS);
+void recv_krb5_kdc_req(int,krb5_kdc_req *,char *);
 //end func
 void send_krb5_priv(int,krb5_priv *);
 void recv_krb5_priv(int ,krb5_priv *);

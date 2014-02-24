@@ -3,6 +3,7 @@
 #include "Encode/base64.h"
 #include "database/log.h"
 #include "database/user_pass.h"
+#include "dynamic/dynamic.h"
 #define PORT "3490"  // порт, на который будут приходить соединения
 
 
@@ -114,27 +115,27 @@ int main(void)
 
         if (!fork()) { // тут начинается дочерний процесс
         	close(sockfd);// дочернему процессу не нужен слушающий сокет
-        	krb5_kdc_req *as_rep=malloc(sizeof(krb5_kdc_req));
-        	as_rep->padata=malloc(sizeof(krb5_pa_data));
-        	as_rep->client->data=malloc(sizeof(krb5_data));
-        	as_rep->addresses=malloc(sizeof(krb5_address));
-        	as_rep->unenc_authdata=malloc(sizeof(krb5_authdata));
-        	as_rep->second_ticket=malloc(sizeof(krb5_ticket));
-        	memset(as_rep,0,sizeof(*as_rep));
-
-
-
-
-
-
-
-
-
-        	//
         	char FLAGS=0;
+        	krb5_kdc_req *as_rep=calloc(1,sizeof(krb5_kdc_req));
+        	malloc_krb5_kdc_req(as_rep);
+        	//malloc(sizeof(krb5_kdc_req));
 
+        	//malloc_krb5_kdc_req(&as_rep);
+        	//memset(&as_rep,0,sizeof(as_rep));
         	recv_krb5_kdc_req(new_fd,as_rep,&FLAGS);
-        	if(FLAGS){}
+        	printf("%d",as_rep->magic);
+
+
+
+
+
+
+
+        	//krb5_free_kdc_req(&as_rep);
+        	//
+
+        	//recv_krb5_kdc_req(new_fd,as_rep,&FLAGS);
+        	//if(FLAGS){}
         close(new_fd);
         	exit(0);
         }

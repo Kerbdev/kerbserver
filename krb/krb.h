@@ -4,7 +4,8 @@
  *  Created on: Feb 10, 2014
  *      Author: ivan
  */
-
+#ifndef __KRB_H__
+#define __KRB_H__
 #define MAXDATASIZE 1024
 #define	KRB5_AS_REQ	((krb5_msgtype)10) /* Req for initial authentication */
 #define	KRB5_AS_REP	((krb5_msgtype)11) /* Response to KRB_AS_REQ request */
@@ -124,7 +125,7 @@ typedef struct _krb5_enc_data {
 
 /* Time set */
 typedef struct _krb5_ticket_times {
-    krb5_timestamp authtime; /* XXX ? should ktime in KDC_REP == authtime
+    krb5_timestamp authtime; /* should ktime in KDC_REP == authtime
 				in ticket? otherwise client can't get this */
     krb5_timestamp starttime;		/* optional in ticket, if not present,
 					   use authtime */
@@ -372,10 +373,7 @@ typedef struct _krb5_safe {
     krb5_checksum *checksum;    /* data integrity checksum */
 } krb5_safe;
 
-typedef struct _krb5_priv {
-    krb5_magic magic;
-    krb5_enc_data enc_part;             /* encrypted part */
-} krb5_priv;
+
 
 typedef struct _krb5_priv_enc_part {
     krb5_magic magic;
@@ -386,6 +384,10 @@ typedef struct _krb5_priv_enc_part {
     krb5_address *s_address;    /* sender address */
     krb5_address *r_address;    /* recipient address, optional */
 } krb5_priv_enc_part;
+typedef struct _krb5_priv {
+    krb5_magic magic;
+    krb5_priv_enc_part enc_part;             /* encrypted part */
+} krb5_priv;
 typedef krb5_pointer krb5_kt_cursor;
 
 typedef struct krb5_keytab_entry_st {
@@ -399,7 +401,7 @@ typedef struct krb5_keytab_entry_st {
 struct _krb5_kt;
 typedef struct _krb5_kt *krb5_keytab;
 void init_as_req(krb5_kdc_req *,char *);
-
+#endif
 
 
 

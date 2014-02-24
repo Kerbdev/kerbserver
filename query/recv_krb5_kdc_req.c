@@ -216,28 +216,28 @@ void recv_krb5_kdc_req(int new_fd,krb5_kdc_req *as_rep,char *FLAGS){
 //date sync
 
 	if (recv(new_fd, &as_rep->magic,sizeof(as_rep->magic) , 0) == -1){
-	                   perror("recv");}
+	                   perror("recv1");}
 	as_rep->magic=ntohl(as_rep->magic);
 
 	if (recv(new_fd, &as_rep->msg_type,sizeof(as_rep->msg_type) , 0) == -1){
-		                   perror("recv");}
+		                   perror("recv2");}
 	as_rep->msg_type=ntohl(as_rep->msg_type);
 	recv_padata(new_fd,as_rep->padata);
 	if (recv(new_fd, &as_rep->kdc_options,sizeof(as_rep->kdc_options) , 0) == -1){
-			                   perror("recv");}
+			                   perror("recv3");}
 	as_rep->kdc_options=ntohl(as_rep->kdc_options);
 	if (recv(new_fd, &as_rep->kdc_options,sizeof(as_rep->kdc_options) , 0) == -1){
-							                   perror("recv");}
+							                   perror("recv4");}
 
 	recv_principal_data(new_fd,as_rep->client);
 	recv_principal_data(new_fd,as_rep->server);
 
 	if (recv(new_fd, &as_rep->from,sizeof(as_rep->from) , 0) == -1){
-							                   perror("recv");}
+							                   perror("recv5");}
 	as_rep->from=ntohl(as_rep->from);
 
 	if (recv(new_fd, &as_rep->till,sizeof(as_rep->till) , 0) == -1){
-									           perror("recv");}
+									           perror("recv6");}
 	as_rep->till=ntohl(as_rep->till);
 
 	if (recv(new_fd, &as_rep->rtime,sizeof(as_rep->rtime) , 0) == -1){

@@ -10,9 +10,9 @@ static int handler(void* user, const char* section, const char* name,
 
     #define MATCH(s, n) strcmp(section, s) == 0 && strcmp(name, n) == 0
     if (MATCH("timings", "max_life")) {
-        pconfig->max_life = atoi(value);
+        pconfig->max_life = *value;
     } else if (MATCH("timings", "max_renewable_life")) {
-        pconfig->max_renewable_life = atoi(value);
+        pconfig->max_renewable_life = *value;
     } else if (MATCH("timings", "timeout")) {
         pconfig->timeout = atoi(value);
     } else if (MATCH("timings", "retries")) {

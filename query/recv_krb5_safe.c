@@ -7,19 +7,24 @@
 #include "request.h"
 void send_krb5_checksum(int sockfd,krb5_checksum *check){
 
-	if (recv(sockfd, &check->magic,sizeof(check->magic) , 0) == -1){
-			                   perror("recv");}
-	check->magic=ntohl(check->magic);
+	if (send(sockfd, &check->magic,sizeof(check->magic) , 0) == -1){
+			                   perror("send");}
+	check->magic=htonl(check->magic);
 
-	if (recv(sockfd, &check->checksum_type,sizeof(check->checksum_type) , 0) == -1){
-			                   perror("recv");}
-	check->checksum_type=ntohl(check->checksum_type);
+	if (send(sockfd, &check->checksum_type,sizeof(check->checksum_type) , 0) == -1){
+			                   perror("send");}
+	check->checksum_type=htonl(check->checksum_type);
+	check->length=0;
+			if(check->contents)
+			check->length=strlen((char *) check->contents)+1;
+			int len=check->length;
+	check->length=htonl(check->length);
+	if (send(sockfd, &check->length,sizeof(check->length) , 0) == -1){
+									perror("send");}
 
-	if (recv(sockfd, &check->length,sizeof(check->length) , 0) == -1){
-									perror("recv");}
-	check->length=ntohl(check->length);
-	if (recv(sockfd, (char *) check->contents,check->length , 0) == -1){
-										perror("recv");}
+	if(len)
+	if (send(sockfd, (char *) check->contents,check->length , 0) == -1){
+										perror("send");}
 }
 void recv_krb5_safe(int sockfd,krb5_safe *safe){
 

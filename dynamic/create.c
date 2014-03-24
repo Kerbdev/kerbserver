@@ -16,21 +16,13 @@ void malloc_krb5_kdc_req(krb5_kdc_req *as_rep){
 	        	            	perror("Out of memory");
 	        	                exit(-1);
 	        	                }
-	as_rep->client->data=calloc(1,sizeof(krb5_data));
-	if(as_rep->client->data == NULL){
-	            	perror("Out of memory");
-	                exit(-1);
-	                }
+	malloc_krb5_principal(as_rep->client);
 	as_rep->server=calloc(1,sizeof(krb5_principal_data));
 	 if(as_rep->server == NULL){
 	        	   perror("Out of memory");
 	        	   exit(-1);
 	        	   }
-    as_rep->server->data=calloc(1,sizeof(krb5_data));
-	 if(as_rep->server->data == NULL){
-	        	     perror("Out of memory");
-	        	     exit(-1);
-	        	     }
+	 malloc_krb5_principal(as_rep->server);
 	as_rep->addresses=calloc(1,sizeof(krb5_address));
 	if(as_rep->addresses == NULL){
 	            	perror("Out of memory");
@@ -51,14 +43,37 @@ void malloc_krb5_kdc_req(krb5_kdc_req *as_rep){
 	        	    perror("Out of memory");
 	        	    exit(-1);
 	        	     }
-	as_rep->second_ticket->enc_part2=calloc(1,sizeof(krb5_ticket));
+	 malloc_krb5_principal(as_rep->second_ticket->server);
+	as_rep->second_ticket->enc_part2=calloc(1,sizeof(krb5_enc_tkt_part));
 	 if(as_rep->second_ticket->enc_part2== NULL){
 	        	     perror("Out of memory");
 	        	     exit(-1);
 	        	     }
+	 as_rep->second_ticket->enc_part2->session=calloc(1,sizeof(krb5_keyblock));
+	 	 if(as_rep->second_ticket->enc_part2->session== NULL){
+	 	        	     perror("Out of memory");
+	 	        	     exit(-1);
+	 	        	     }
+	 	as_rep->second_ticket->enc_part2->client=calloc(1,sizeof(krb5_principal_data));
+	 		 if(as_rep->second_ticket->enc_part2->client== NULL){
+	 		        	     perror("Out of memory");
+	 		        	     exit(-1);
+	 		        	     }
+	 		malloc_krb5_principal(as_rep->second_ticket->enc_part2->client);
+	 		 as_rep->second_ticket->enc_part2->caddrs=calloc(1,sizeof(krb5_address));
+	 		 	 if(as_rep->second_ticket->enc_part2->caddrs== NULL){
+	 		 	        	     perror("Out of memory");
+	 		 	        	     exit(-1);
+	 		 	        	     }
+	 		 	as_rep->second_ticket->enc_part2->authorization_data=calloc(1,sizeof(krb5_authdata));
+	 		 		 if(as_rep->second_ticket->enc_part2->authorization_data== NULL){
+	 		 		        	     perror("Out of memory");
+	 		 		        	     exit(-1);
+	 		 		        	     }
+
 }
 void
-malloc_krb5_principal(krb5_principal val)
+malloc_krb5_principal(krb5_principal_data *val)
 {
 	val->data=calloc(1,sizeof(krb5_data));
 	 if(val->data == NULL){
@@ -311,6 +326,8 @@ void malloc_krb5_priv_enc_part(krb5_priv_enc_part *priv_enc){
 				if(priv_enc->r_address== NULL){
 						 perror("Out of memory");
 						exit(-1);	}
+
+
 
 }
 void malloc_krb5_priv(krb5_priv *val){

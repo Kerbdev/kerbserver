@@ -37,11 +37,14 @@ void send_krb5_authdata(int sockfd,krb5_authdata *as_rep){
 	as_rep->ad_type=htonl(as_rep->ad_type);
 				if (send(sockfd, &as_rep->ad_type,sizeof(as_rep->ad_type) , 0) == -1){
 						           perror("send");}
-	int len=as_rep->length;
+	as_rep->length=0;
+			if(as_rep->contents)
+			as_rep->length=strlen((char *) as_rep->contents)+1;
+			int len=as_rep->length;
 	as_rep->length=htonl(as_rep->length);
 				if (send(sockfd, &as_rep->length,sizeof(as_rep->length) , 0) == -1){
 								perror("send");}
-
+				if(len)
 				if (send(sockfd, (char *) as_rep->contents,len , 0) == -1){
 								perror("send");}
 
@@ -70,15 +73,15 @@ void send_krb5_ticket(int sockfd,krb5_ticket *as_rep){
 
 }
 void send_padata(int new_fd,krb5_pa_data *as_rep){
-	as_rep->contents=(krb5_octet *)"Hello";
-	//as_rep->magic=3;
-	//as_rep->pa_type=2;
-	as_rep->length=strlen((char *) as_rep->contents);
-	int len=as_rep->length;
+
+	as_rep->length=0;
+			if(as_rep->contents)
+			as_rep->length=strlen((char *) as_rep->contents)+1;
+			int len=as_rep->length;
 	as_rep->length=htonl(as_rep->length);
 	if (send(new_fd, &as_rep->length,sizeof(as_rep->length) , 0) == -1){
 			                   perror("send");}
-
+	if(len)
 	if (send(new_fd, (char *) as_rep->contents,len , 0) == -1){
 		                   perror("send");}
 	as_rep->magic=htonl(as_rep->magic);
@@ -90,17 +93,20 @@ void send_padata(int new_fd,krb5_pa_data *as_rep){
 
 }
 void send_krb5_keyblock(int sockfd,krb5_keyblock *as_rep){
+	as_rep->length=0;
+			if(as_rep->contents)
+			as_rep->length=strlen((char *) as_rep->contents)+1;
+			int len=as_rep->length;
 	as_rep->magic=htonl(as_rep->magic);
 	if (send(sockfd, &as_rep->magic,sizeof(as_rep->magic) , 0) == -1){
 					                   perror("send");}
 	as_rep->enctype=htonl(as_rep->enctype);
 	if (send(sockfd, &as_rep->enctype,sizeof(as_rep->enctype) , 0) == -1){
 									   perror("send");}
-	int len=as_rep->length;
 	as_rep->length=htonl(as_rep->length);
 	if (send(sockfd, &as_rep->length,sizeof(as_rep->length) , 0) == -1){
 									perror("send");}
-
+	if(len)
 	if (send(sockfd, (char *) as_rep->contents,len , 0) == -1){
 										perror("send");}
 
@@ -138,18 +144,20 @@ void send_krb5_ticket_times(int sockfd,krb5_ticket_times *as_rep){
 							            perror("send");}
 }
 void send_krb5_address(int sockfd,krb5_address *as_rep){
+	as_rep->length=0;
+			if(as_rep->contents)
+			as_rep->length=strlen((char *) as_rep->contents)+1;
+			int len=as_rep->length;
 	as_rep->magic=htonl(as_rep->magic);
 		if (send(sockfd, &as_rep->magic,sizeof(as_rep->magic) , 0) == -1){
 						                   perror("send");}
 	as_rep->addrtype=htonl(as_rep->addrtype);
 		if (send(sockfd, &as_rep->addrtype,sizeof(as_rep->addrtype) , 0) == -1){
 							               perror("send");}
-	as_rep->length=strlen((char *) as_rep->contents);
-	int len=as_rep->length;
 	as_rep->length=htonl(as_rep->length);
 		if (send(sockfd, &as_rep->length,sizeof(as_rep->length) , 0) == -1){
 					                   perror("send");}
-
+		if(len)
 		if (send(sockfd, (char *) as_rep->contents,len , 0) == -1){
 				                   perror("send");}
 }

@@ -6,6 +6,7 @@
  */
 #ifndef __KRB_H__
 #define __KRB_H__
+#define pvno 5
 #define MAXDATASIZE 1024
 #define	KRB5_AS_REQ	((krb5_msgtype)10) /* Req for initial authentication */
 #define	KRB5_AS_REP	((krb5_msgtype)11) /* Response to KRB_AS_REQ request */
@@ -17,7 +18,7 @@
 #define	KRB5_PRIV	((krb5_msgtype)21) /* Private application message */
 #define	KRB5_CRED	((krb5_msgtype)22) /* Credential forwarding message */
 #define	KRB5_ERROR	((krb5_msgtype)30) /* Error response */
-typedef	unsigned char	krb5_octet;
+typedef	char	krb5_octet;
 
 typedef	unsigned int krb5_boolean;
 typedef	unsigned int krb5_msgtype;
@@ -235,7 +236,7 @@ typedef struct _krb5_kdc_req {
     krb5_timestamp rtime;		/* (optional) requested renew_till */
     int nonce;			/* nonce to match request/response */
     int nktypes;			/* # of ktypes, must be positive */
-    krb5_enctype *ktype;		/* requested enctype(s) */
+    krb5_enctype ktype;		/* requested enctype(s) */
     krb5_address *addresses;	/* requested addresses, optional */
     krb5_enc_data authorization_data;	/* encrypted auth data; OPTIONAL */
     krb5_authdata *unenc_authdata; /* unencrypted auth data,

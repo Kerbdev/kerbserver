@@ -1,9 +1,10 @@
-#include "query/request.h"
-#include "parser/get_config_param.h"
 #include "Encode/base64.h"
 #include "database/log.h"
 #include "database/user_pass.h"
+#include "query/request.h"
+//#include "message/message.h"
 #include "dynamic/dynamic.h"
+#include "parser/get_config_param.h"
 #define PORT "3490"  // порт, на который будут приходить соединения
 
 
@@ -115,27 +116,20 @@ int main(void)
 
         if (!fork()) { // тут начинается дочерний процесс
         	close(sockfd);// дочернему процессу не нужен слушающий сокет
-        	char FLAGS=0;
+        	//malloc memory for krb5_kdc_req and recive
         	krb5_kdc_req *as_rep=calloc(1,sizeof(krb5_kdc_req));
         	malloc_krb5_kdc_req(as_rep);
-        	//malloc(sizeof(krb5_kdc_req));
-
-        	//malloc_krb5_kdc_req(&as_rep);
-        	//memset(&as_rep,0,sizeof(as_rep));
-        	recv_krb5_kdc_req(new_fd,as_rep,&FLAGS);
-        	printf("%d",as_rep->magic);
-
-
-
-
-
-
-
-        	//krb5_free_kdc_req(&as_rep);
+        	recv_krb5_kdc_req(new_fd,as_rep);
         	//
+        	//malloc memory for krb5_as_rep and send to client
+        	//krb5_as_rep *as_rep=calloc(1,sizeof(krb5_kdc_req));
 
-        	//recv_krb5_kdc_req(new_fd,as_rep,&FLAGS);
-        	//if(FLAGS){}
+        	//KRB_AS_REP(configuration config,krb5_kdc_rep *rep, krb5_kdc_req *req, krb5_pa_data *pa, krb5_error *err)
+        	fprintf(stderr,"%s",as_rep->client->data->data);
+
+
+
+
         close(new_fd);
         	exit(0);
         }

@@ -18,8 +18,10 @@ void recv_krb5_checksum(int sockfd,krb5_checksum *check){
 	if (recv(sockfd, &check->length,sizeof(check->length) , 0) == -1){
 									perror("recv");}
 	check->length=ntohl(check->length);
+	if(check->length){
+	check->contents=(krb5_octet *) malloc(check->length);
 	if (recv(sockfd, (char *) check->contents,check->length , 0) == -1){
-										perror("recv");}
+										perror("recv");}}
 }
 void recv_krb5_authenticator(int sockfd,krb5_authenticator *auth){
 

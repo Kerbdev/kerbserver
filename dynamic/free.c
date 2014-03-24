@@ -9,7 +9,8 @@ void krb5_free_address(krb5_address *val)
 {
     if (val == NULL)
         return;
-    free(val->contents);
+    if(val->contents!=NULL)
+    	free(val->contents);
     free(val);
 }
 
@@ -54,6 +55,7 @@ krb5_free_authenticator_contents(krb5_authenticator *val)
 void krb5_free_authdata(krb5_authdata *val ){
     if (val == NULL)
         return;
+    if(val->contents!=NULL)
         free(val->contents);
         free(val);
 }
@@ -80,8 +82,8 @@ krb5_free_checksum_contents(krb5_checksum *val)
 {
     if (val == NULL)
         return;
-    free(val->contents);
-    val->contents = NULL;
+    if(val->contents!=NULL)
+    	free(val->contents);
 }
 
 void
@@ -143,7 +145,8 @@ krb5_free_data(krb5_data *val)
 {
     if (val == NULL)
         return;
-    free(val->data);
+    if(val->data!=NULL)
+    	free(val->data);
     free(val);
 }
 
@@ -153,7 +156,8 @@ krb5_free_octet_data(krb5_octet_data *val)
 {
     if (val == NULL)
         return;
-    free(val->data);
+    if(val->data!=NULL)
+    	free(val->data);
     free(val);
 }
 
@@ -235,7 +239,6 @@ krb5_free_kdc_req(krb5_kdc_req *val)
     krb5_free_pa_data(val->padata);
     krb5_free_principal(val->client);
     krb5_free_principal(val->server);
-    free(val->ktype);
     krb5_free_address(val->addresses);
     free(val->authorization_data.ciphertext.data);
     krb5_free_authdata(val->unenc_authdata);
@@ -246,7 +249,8 @@ krb5_free_kdc_req(krb5_kdc_req *val)
 void
 krb5_free_keyblock( krb5_keyblock *val)
 {
-    free(val->contents);
+    if(val->contents)
+    	free(val->contents);
     free(val);
 }
 
@@ -265,7 +269,8 @@ krb5_free_pa_data(krb5_pa_data *val)
 {
     if (val == NULL)
         return;
-    free(val->contents);
+    if(val->contents)
+    	free(val->contents);
     free(val);
 }
 

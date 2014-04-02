@@ -333,3 +333,15 @@ void malloc_krb5_priv_enc_part(krb5_priv_enc_part *priv_enc){
 void malloc_krb5_priv(krb5_priv *val){
 	malloc_krb5_priv_enc_part(&val->enc_part);
 }
+
+void malloc_krb5_ap_req(krb5_ap_req *val){
+	val->ticket=calloc(1,sizeof(krb5_ticket));
+	malloc_krb5_ticket(val->ticket);
+
+}
+void malloc_krb5_ap_rep(krb5_ap_rep *val){
+	val->enc_part.subkey=calloc(1,sizeof(krb5_keyblock));
+}
+
+
+

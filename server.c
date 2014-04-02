@@ -2,9 +2,8 @@
 #include "database/log.h"
 #include "database/user_pass.h"
 #include "query/request.h"
-//#include "message/message.h"
+#include "message/message.h"
 #include "dynamic/dynamic.h"
-#include "parser/get_config_param.h"
 #define PORT "3490"  // порт, на который будут приходить соединения
 
 
@@ -117,19 +116,65 @@ int main(void)
         if (!fork()) { // тут начинается дочерний процесс
         	close(sockfd);// дочернему процессу не нужен слушающий сокет
         	//malloc memory for krb5_kdc_req and recive
-        	krb5_kdc_req *as_rep=calloc(1,sizeof(krb5_kdc_req));
-        	malloc_krb5_kdc_req(as_rep);
-        	recv_krb5_kdc_req(new_fd,as_rep);
-        	//
+        	krb5_kdc_req *as_req=calloc(1,sizeof(krb5_kdc_req));
+        	malloc_krb5_kdc_req(as_req);
+        	recv_krb5_kdc_req(new_fd,as_req);
+         	krb5_error *error=calloc(1,sizeof(krb5_error));
+        	malloc_krb5_error(error);
+
         	//malloc memory for krb5_as_rep and send to client
-        	//krb5_as_rep *as_rep=calloc(1,sizeof(krb5_kdc_req));
+        	krb5_kdc_rep *as_rep=calloc(1,sizeof(krb5_kdc_rep));
+        	malloc_krb5_kdc_rep(as_rep);
+        	//KRB_AS_REP(conf,as_rep,as_req, as_req->padata,error);//if error send KRB5_ERRO
+    		//fprintf(stderr,"%s",as_rep->client->data->data);
 
-        	//KRB_AS_REP(configuration config,krb5_kdc_rep *rep, krb5_kdc_req *req, krb5_pa_data *pa, krb5_error *err)
-        	fprintf(stderr,"%s",as_rep->client->data->data);
+        	send_krb5_kdc_rep(new_fd,*as_rep);
+
+        	krb5_kdc_rep *new_as_rep=calloc(1,sizeof(krb5_kdc_rep));
+        	malloc_krb5_kdc_rep(new_as_rep);
+        	krb5_kdc_req *new_as_req=calloc(1,sizeof(krb5_kdc_req));
+        	malloc_krb5_kdc_req(new_as_req);
+        	krb5_ticket *ticket=calloc(1,sizeof(krb5_ticket));
+        	malloc_krb5_ticket(ticket);
+
+        	recv_krb5_kdc_req(new_fd,new_as_req);
+        	KRB_TGS_REP_FORM(new_as_req, error, ticket);
+        	send_krb5_kdc_rep(new_fd,*new_as_rep);
+        	send_krb5_ticket(new_fd,*ticket);
+
+        	krb5_ap_req *ap_req=calloc(1,sizeof(krb5_ap_req));
+        	malloc_krb5_ap_req(ap_req);
+
+        	krb5_ticket *new_ticket=calloc(1,sizeof(krb5_ticket));
+        	malloc_krb5_ticket(new_ticket);
+        	//recv_krb5_ticket(sockfd,new_ticket);
+        	//NEED FUNCTION KRB_TGS_REP_CHECK
 
 
+        	krb5_authenticator *authen=calloc(1,sizeof(krb5_authenticator));
+        	malloc_krb5_authenticator(authen);
+        	recv_krb5_ap_req(new_fd,ap_req);
+        	recv_krb5_authenticator(new_fd,authen);
+        	recv_krb5_ticket(new_fd,new_ticket);
+        	krb_ap_req_check(ap_req, error);
 
+        	krb5_ap_rep *ap_rep=calloc(1,sizeof(krb5_ap_rep));
+        	malloc_krb5_ap_rep(ap_rep);
 
+        	krb_ap_rep_form(ap_rep);
+        	send_krb5_ap_rep(new_fd,*ap_rep);
+
+        	//free memory
+        	krb5_free_kdc_req(as_req);
+        	krb5_free_kdc_rep(as_rep);
+        	krb5_free_error(error);
+        	krb5_free_kdc_req(new_as_req);
+        	krb5_free_kdc_rep(new_as_rep);
+        	krb5_free_ticket(ticket);
+        	krb5_free_ap_req(ap_req);
+        	krb5_free_ticket(new_ticket);
+        	krb5_free_authenticator(authen);
+        	krb5_free_ap_rep(ap_rep);
         close(new_fd);
         	exit(0);
         }

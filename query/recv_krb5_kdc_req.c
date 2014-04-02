@@ -5,38 +5,38 @@
  *      Author: ivan
  */
 #include "request.h"
-void send_principal_data(int new_fd,krb5_principal_data *as_rep){
-	    as_rep->length=htonl(as_rep->length);
-		if (send(new_fd, &as_rep->length,sizeof(as_rep->length) , 0) == -1){
+void send_principal_data(int new_fd,krb5_principal_data as_rep){
+	    as_rep.length=htonl(as_rep.length);
+		if (send(new_fd, &as_rep.length,sizeof(as_rep.length) , 0) == -1){
 				                   perror("send");}
-		send_krb5_data(new_fd,(krb5_data *) &as_rep->realm);
-		send_krb5_data(new_fd,as_rep->data);
+		send_krb5_data(new_fd,as_rep.realm);
+		send_krb5_data(new_fd,*as_rep.data);
 
-		as_rep->magic=htonl(as_rep->magic);
-		if (send(new_fd, &as_rep->magic,sizeof(as_rep->magic) , 0) == -1){
+		as_rep.magic=htonl(as_rep.magic);
+		if (send(new_fd, &as_rep.magic,sizeof(as_rep.magic) , 0) == -1){
 						                   perror("send");}
-		as_rep->type=htonl(as_rep->type);
-		if (send(new_fd, &as_rep->type,sizeof(as_rep->type) , 0) == -1){
+		as_rep.type=htonl(as_rep.type);
+		if (send(new_fd, &as_rep.type,sizeof(as_rep.type) , 0) == -1){
 								                   perror("send");}
 
 
 
 }
 
-void send_krb5_data(int new_fd,krb5_data *as_rep){
-	as_rep->magic=htonl(as_rep->magic);
-	if (send(new_fd, &as_rep->magic,sizeof(as_rep->magic) , 0) == -1){
+void send_krb5_data(int new_fd,krb5_data as_rep){
+	as_rep.magic=htonl(as_rep.magic);
+	if (send(new_fd, &as_rep.magic,sizeof(as_rep.magic) , 0) == -1){
 					                   perror("send");}
-	as_rep->length=strlen(as_rep->data);
-	as_rep->length=0;
-	int len=as_rep->length;
-	as_rep->length=htonl(as_rep->length);
-	if (send(new_fd, &as_rep->length,sizeof(as_rep->length) , 0) == -1){
+	as_rep.length=0;
+	if(as_rep.data)
+	as_rep.length=strlen(as_rep.data)+1;
+	int len=as_rep.length;
+	as_rep.length=htonl(as_rep.length);
+	if (send(new_fd, &as_rep.length,sizeof(as_rep.length) , 0) == -1){
 						                   perror("send");}
-	if(as_rep->length){
-		as_rep->data=(krb5_octet *) malloc(as_rep->length);
-	if (send(new_fd, as_rep->data,len , 0) == -1){
-						                   perror("send");}}
+	if(len)
+	if (send(new_fd, as_rep.data,len , 0) == -1){
+						                   perror("send");}
 
 }
 void recv_padata(int new_fd,krb5_pa_data *as_rep){
@@ -232,7 +232,6 @@ void recv_krb5_kdc_req(int new_fd,krb5_kdc_req *as_rep){
 	                   perror("recv1");}
 	as_rep->magic=ntohl(as_rep->magic);
 
-
 	if (recv(new_fd, &as_rep->msg_type,sizeof(as_rep->msg_type) , 0) == -1){
 		                   perror("recv2");}
 	as_rep->msg_type=ntohl(as_rep->msg_type);
@@ -268,8 +267,8 @@ void recv_krb5_kdc_req(int new_fd,krb5_kdc_req *as_rep){
 	if (recv(new_fd, &as_rep->ktype,sizeof(as_rep->ktype) , 0) == -1){
 											perror("recv4");}
 	as_rep->ktype=ntohl(as_rep->ktype);
+
 	recv_krb5_address(new_fd,as_rep->addresses);
 	recv_krb5_authdata(new_fd,as_rep->unenc_authdata);
-	krb5_ticket *second_ticket=as_rep->second_ticket;
-	recv_krb5_ticket(new_fd,second_ticket);
-}
+	recv_krb5_enc_data(new_fd ,&as_rep->authorization_data);
+	recv_krb5_ticket(new_fd,as_rep->second_ticket);}

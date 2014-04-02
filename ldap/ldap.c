@@ -44,7 +44,6 @@ return( 1 );
 }
 rc=ldap_search_s(ld,"dc=tmk,dc=kbpm,dc=ru",LDAP_SCOPE_SUBTREE,name,Rg,0,&res);
 if(rc==-1){
-	fprintf(stderr, "search_error %s\n", ldap_err2string(rc) );
 	return( 1 );
 }
 for ( e = ldap_first_entry( ld, res ); e != NULL;
@@ -92,8 +91,10 @@ int verif_pass(char *dn,char *pass){
 }
 int ldap_coonect(char *name,char *pass){
 	char *n="*";
-			if (strstr(n,name)!=NULL)
+			if (strstr(name,n)!=NULL)
 				return NAME_FAIL;
+			if (strstr(pass,n)!=NULL)
+							return PASS_FAIL;
 	int l=strlen(name);
 	char *str=(char *)malloc(l+10);
 	strcpy(str,"uid=");

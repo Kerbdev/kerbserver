@@ -19,7 +19,9 @@ krb5_free_ap_rep(krb5_ap_rep *val)
 {
     if (val == NULL)
         return;
-    free(val->enc_part.ciphertext.data);
+    if(val->enc_part.subkey->contents!=NULL)
+    free(val->enc_part.subkey->contents);
+    free(val->enc_part.subkey);
     free(val);
 }
 
@@ -29,6 +31,7 @@ krb5_free_ap_req(krb5_ap_req *val)
     if (val == NULL)
         return;
     krb5_free_ticket(val->ticket);
+    if(val->authenticator.ciphertext.data!=NULL)
     free(val->authenticator.ciphertext.data);
     free(val);
 }

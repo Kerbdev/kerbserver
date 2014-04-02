@@ -26,6 +26,8 @@ void malloc_krb5_cred_enc_part(krb5_cred_enc_part *val);
 void malloc_krb5_cred(krb5_cred *val);
 void malloc_krb5_safe(krb5_safe *val);
 void malloc_krb5_priv(krb5_priv *val);
+void malloc_krb5_ap_req(krb5_ap_req *);
+void malloc_krb5_ap_rep(krb5_ap_rep *);
 //free all struct
 void krb5_free_address (krb5_address *val);
 void krb5_free_ap_rep (krb5_ap_rep *val);

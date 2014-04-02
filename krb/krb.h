@@ -4,9 +4,10 @@
  *  Created on: Feb 10, 2014
  *      Author: ivan
  */
-#ifndef __KRB_H__
-#define __KRB_H__
+#ifndef __KRB__H__
+#define __KRB__H__
 #define pvno 5
+#define MUTUAL_AUTH 1
 #define MAXDATASIZE 1024
 #define	KRB5_AS_REQ	((krb5_msgtype)10) /* Req for initial authentication */
 #define	KRB5_AS_REP	((krb5_msgtype)11) /* Response to KRB_AS_REQ request */
@@ -126,7 +127,7 @@ typedef struct _krb5_enc_data {
 
 /* Time set */
 typedef struct _krb5_ticket_times {
-    krb5_timestamp authtime; /* should ktime in KDC_REP == authtime
+    krb5_timestamp authtime; /*  should ktime in KDC_REP == authtime
 				in ticket? otherwise client can't get this */
     krb5_timestamp starttime;		/* optional in ticket, if not present,
 					   use authtime */
@@ -293,12 +294,6 @@ typedef struct _krb5_ap_req {
     krb5_ticket *ticket;		/* ticket */
     krb5_enc_data authenticator;	/* authenticator (already encrypted) */
 } krb5_ap_req;
-
-typedef struct _krb5_ap_rep {
-    krb5_magic magic;
-    krb5_enc_data enc_part;
-} krb5_ap_rep;
-
 typedef struct _krb5_ap_rep_enc_part {
     krb5_magic magic;
     krb5_timestamp ctime;		/* client time, seconds portion */
@@ -306,6 +301,12 @@ typedef struct _krb5_ap_rep_enc_part {
     krb5_keyblock *subkey;		/* true session key, optional */
     int seq_number;		/* sequence #, optional */
 } krb5_ap_rep_enc_part;
+typedef struct _krb5_ap_rep {
+    krb5_magic magic;
+    krb5_msgtype msg_type;
+    krb5_ap_rep_enc_part enc_part;
+} krb5_ap_rep;
+
 
 typedef struct _krb5_response {
     krb5_magic magic;
@@ -374,8 +375,6 @@ typedef struct _krb5_safe {
     krb5_checksum *checksum;    /* data integrity checksum */
 } krb5_safe;
 
-
-
 typedef struct _krb5_priv_enc_part {
     krb5_magic magic;
     krb5_data user_data;                /* user data */
@@ -389,7 +388,7 @@ typedef struct _krb5_priv {
     krb5_magic magic;
     krb5_priv_enc_part enc_part;             /* encrypted part */
 } krb5_priv;
-typedef krb5_pointer krb5_kt_cursor;
+typedef krb5_pointer krb5_kt_cursor;	/* XXX */
 
 typedef struct krb5_keytab_entry_st {
     krb5_magic magic;
@@ -399,6 +398,12 @@ typedef struct krb5_keytab_entry_st {
     krb5_keyblock key;		/* the secret key */
 } krb5_keytab_entry;
 
+typedef struct _ap_options
+{
+	int reserved;
+	int use_session_key;
+	int mutual_required;
+} ap_options;
 struct _krb5_kt;
 typedef struct _krb5_kt *krb5_keytab;
 void init_as_req(krb5_kdc_req *,char *);

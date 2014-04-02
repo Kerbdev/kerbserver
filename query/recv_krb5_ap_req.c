@@ -10,7 +10,6 @@ void recv_krb5_ap_req(int sockfd,krb5_ap_req *req){
 	if (recv(sockfd, &req->magic,sizeof(req->magic) , 0) == -1){
 			                   perror("recv");}
 	req->magic=ntohl(req->magic);
-
 	if (recv(sockfd, &req->ap_options,sizeof(req->ap_options) , 0) == -1){
 					                   perror("recv");}
 	req->ap_options=ntohl(req->ap_options);

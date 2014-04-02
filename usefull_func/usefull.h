@@ -26,6 +26,8 @@
 #define VALIDATE 31
 #define SET_ZERO 0
 #define SET_ONE 1
+#define USE_SESSION_KEY 1
+#define MUTUAL_REQURED 2
 
 
 int int_to_bit(unsigned int,int);

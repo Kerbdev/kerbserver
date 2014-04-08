@@ -138,7 +138,7 @@ int main(void)
         	malloc_krb5_ticket(ticket);
 
         	recv_krb5_kdc_req(new_fd,new_as_req);
-        	KRB_TGS_REP_FORM(new_as_req, error, ticket);
+        	//KRB_TGS_REP_FORM(new_as_req, error, ticket);
         	send_krb5_kdc_rep(new_fd,*new_as_rep);
         	send_krb5_ticket(new_fd,*ticket);
 
@@ -156,6 +156,8 @@ int main(void)
         	recv_krb5_ap_req(new_fd,ap_req);
         	recv_krb5_authenticator(new_fd,authen);
         	recv_krb5_ticket(new_fd,new_ticket);
+        	//krb5_decrypt_tkt_part(new_ticket->enc_part2,"Ivan");
+        	//fprintf(stderr,"%s",new_ticket->enc_part2->client->data->data);
         	krb_ap_req_check(ap_req, error);
 
         	krb5_ap_rep *ap_rep=calloc(1,sizeof(krb5_ap_rep));

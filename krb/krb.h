@@ -25,17 +25,17 @@ typedef	unsigned int krb5_boolean;
 typedef	unsigned int krb5_msgtype;
 typedef	unsigned int krb5_kvno;
 
-typedef	int krb5_addrtype;
-typedef int krb5_enctype;
-typedef int krb5_cksumtype;
-typedef int krb5_authdatatype;
-typedef int krb5_keyusage;
+typedef	unsigned int krb5_addrtype;
+typedef unsigned int krb5_enctype;
+typedef unsigned int krb5_cksumtype;
+typedef unsigned int krb5_authdatatype;
+typedef unsigned int krb5_keyusage;
 
-typedef int	krb5_preauthtype;
+typedef unsigned int	krb5_preauthtype;
 typedef	unsigned int krb5_flags;
-typedef int	krb5_timestamp;
-typedef	int	krb5_error_code;
-typedef int	krb5_deltat;
+typedef unsigned int	krb5_timestamp;
+typedef	unsigned int	krb5_error_code;
+typedef unsigned int	krb5_deltat;
 
 typedef krb5_error_code	krb5_magic;
 
@@ -119,7 +119,6 @@ typedef struct _krb5_checksum {
 } krb5_checksum;
 
 typedef struct _krb5_enc_data {
-    krb5_magic magic;
     krb5_enctype enctype;
     krb5_kvno kvno;
     krb5_data ciphertext;
@@ -397,16 +396,24 @@ typedef struct krb5_keytab_entry_st {
     krb5_kvno vno;		/* key version number */
     krb5_keyblock key;		/* the secret key */
 } krb5_keytab_entry;
-
-typedef struct _ap_options
-{
-	int reserved;
-	int use_session_key;
-	int mutual_required;
-} ap_options;
 struct _krb5_kt;
 typedef struct _krb5_kt *krb5_keytab;
 void init_as_req(krb5_kdc_req *,char *);
+void krb5_crypt_enc_data(krb5_enc_data *data,char *pass);
+void krb5_decrypt_enc_data(krb5_enc_data *data,char *pass);
+void krb5_crypt_keyblocks(krb5_keyblock *data,char *pass);
+void krb5_decrypt_keyblocks(krb5_keyblock *data,char *pass);
+void krb5_crypt_address(krb5_address *data,char *pass);
+void krb5_decrypt_address(krb5_address *data,char *pass);
+void krb5_crypt_principal_data(krb5_principal_data *data,char *pass);
+void krb5_decrypt_principal_data(krb5_principal_data *data,char *pass);
+void krb5_crypt_transited(krb5_transited *data,char *pass);
+void krb5_decrypt_transited(krb5_transited *data,char *pass);
+void krb5_crypt_tkt_part(krb5_enc_tkt_part *data,char *pass);
+void krb5_decrypt_tkt_part(krb5_enc_tkt_part *data,char *pass);
+void krb5_decrypt_kdc_rep_part(krb5_enc_kdc_rep_part *data,char *pass);
+void krb5_crypt_kdc_rep_part(krb5_enc_kdc_rep_part *data,char *pass);
+void generate_session_key(unsigned char *session_key,int size);
 #endif
 
 

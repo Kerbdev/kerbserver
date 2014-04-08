@@ -6,9 +6,9 @@
  */
 #include "request.h"
 void send_krb5_enc_data(int sockfd,krb5_enc_data as_rep){
-	as_rep.magic=htonl(as_rep.magic);
+	/*as_rep.magic=htonl(as_rep.magic);
 			if (send(sockfd, &as_rep.magic,sizeof(as_rep.magic) , 0) == -1){
-			                   perror("send");}
+			                   perror("send");}*/
 
 	as_rep.enctype=htonl(as_rep.enctype);
 			if (send(sockfd, &as_rep.enctype,sizeof(as_rep.enctype) , 0) == -1){

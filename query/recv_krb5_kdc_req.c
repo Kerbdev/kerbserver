@@ -112,9 +112,9 @@ void recv_krb5_address(int new_fd,krb5_address *as_rep){
 }
 void recv_krb5_enc_data(int new_fd,krb5_enc_data *as_rep){
 
-			if (recv(new_fd, &as_rep->magic,sizeof(as_rep->magic) , 0) == -1){
+		/*	if (recv(new_fd, &as_rep->magic,sizeof(as_rep->magic) , 0) == -1){
 			                   perror("recv");}
-			as_rep->magic=ntohl(as_rep->magic);
+			as_rep->magic=ntohl(as_rep->magic);*/
 
 			if (recv(new_fd, &as_rep->enctype,sizeof(as_rep->enctype) , 0) == -1){
 					                   perror("recv");}

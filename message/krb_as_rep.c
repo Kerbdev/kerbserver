@@ -8,8 +8,8 @@ void KRB_AS_REP(configuration config,krb5_kdc_rep *rep, krb5_kdc_req *req, krb5_
 	{
 		int is_pa_enc_timestamp_required = 0;
 		int pa_enc_timestamp;
-		char* db_client = "client";
-		char* db_server = "server";
+		//char* db_client = "client";
+		//char* db_server = "server";
 		time_t kdc_time = time(NULL);
 		unsigned char key[32]; // keyfrom REQ for decryption
 		unsigned char iv[16]; // initialization vector from REQ for decryption
@@ -30,15 +30,15 @@ void KRB_AS_REP(configuration config,krb5_kdc_rep *rep, krb5_kdc_req *req, krb5_
 		char *pers = "session_key_generation";
 		int ret;
 		/* erros filling */
-		err->client->data->data = db_client;
-		err->server->data->data = db_server;
+		//err->client->data->data = db_client;
+		//err->server->data->data = db_server;
 		err->stime = kdc_time;
 		err->error = KDC_ERR_NONE;
 		/* end */
 		rep->client->data->data = "client";
 		//fprintf(stderr,"%s",rep->client->data->data);
 		rep->client->data->data = req->client->data->data;
-		if (rep->client->data->data != db_client)
+		/*if (rep->client->data->data != db_client)
 			printf("%d", err->error = KDC_ERR_C_PRINCIPAL_UNKNOWN);
 		if (req->server->data->data != db_server)
 			printf("%d", err->error = KDC_ERR_S_PRINCIPAL_UNKNOWN);
@@ -46,20 +46,20 @@ void KRB_AS_REP(configuration config,krb5_kdc_rep *rep, krb5_kdc_req *req, krb5_
 			printf("%d", err->error = KDC_ERR_PREAUTH_REQUIRED);
 		if (pa_enc_timestamp)
 			{
-				/* PA-DATA decryption */
-				/* decrypting */
+				//PA-DATA decryption
+				// decrypting
 				input = req_output;
 
-				/* end */
+				// end
 				if (decrypt_error())
 					printf("%d", err->error = KRB_AP_ERR_BAD_INTEGRITY);
 				//strptime(decrypted_enc_timestamp, "%d%m%Y%H%M", &time);
 				t = mktime(&time);
 				if(difftime(kdc_time + config.max_life, t) < 0)
 					printf("%d", err->error = KDC_ERR_PREAUTH_FAILED);
-				/* check for replay KDC_ERR_PREAUTH_FAILED
+				// check for replay KDC_ERR_PREAUTH_FAILED
 				...
-				*/
+
 		}
 				if (int_to_bit(ko, FORWARDABLE))
 				{
@@ -75,10 +75,10 @@ void KRB_AS_REP(configuration config,krb5_kdc_rep *rep, krb5_kdc_req *req, krb5_
 				}
 				if (int_to_bit(ko, RENEW) || int_to_bit(ko, VALIDATE) || int_to_bit(ko, PROXY) || int_to_bit(ko, FORWARDED) || int_to_bit(ko, ENC_TKT_IN_SKEY))
 					printf("%d", err->error = KDC_ERR_BADOPTION);
-				/* end */
+				// end
 				
-				/* session key generator */
-				tkt.enc_part2->session->contents = (krb5_octet *)&session_key;
+				// session key generator */
+				//tkt.enc_part2->session->contents = (krb5_octet *)&session_key;
 				tkt.enc_part2->client->data = req->client->data;
 				tkt.server->realm = req->client->realm;
 				tkt.enc_part2->transited.tr_contents.data = "";

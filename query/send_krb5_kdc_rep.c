@@ -146,7 +146,6 @@ void send_krb5_ticket_times(int sockfd,krb5_ticket_times as_rep){
 }
 void send_krb5_address(int sockfd,krb5_address as_rep){
 	as_rep.length=0;
-	as_rep.contents="Hello";
 			if(as_rep.contents)
 			as_rep.length=strlen((char *) as_rep.contents)+1;
 			int len=as_rep.length;
@@ -167,7 +166,7 @@ void send_krb5_enc_kdc_rep_part(int new_fd,krb5_enc_kdc_rep_part req){
 	req.magic=htonl(req.magic);
 	if (send(new_fd, &req.magic,sizeof(req.magic) , 0) == -1){
 				                   perror("send");}
-req.msg_type=99999;
+//req.msg_type=99999;
 	req.msg_type=htonl(req.msg_type);
 	if (send(new_fd, &req.msg_type,sizeof(req.msg_type) , 0) == -1){
 						           perror("send");}

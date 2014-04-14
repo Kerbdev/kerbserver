@@ -115,7 +115,9 @@ int main(void)
 
         if (!fork()) { // тут начинается дочерний процесс
         	close(sockfd);// дочернему процессу не нужен слушающий сокет
-        	//malloc memory for krb5_kdc_req and recive
+        	int i=0;
+        	for(;i<conf.retries;i++){
+        	/*//malloc memory for krb5_kdc_req and recive
         	krb5_kdc_req *as_req=calloc(1,sizeof(krb5_kdc_req));
         	malloc_krb5_kdc_req(as_req);
         	recv_krb5_kdc_req(new_fd,as_req);
@@ -136,9 +138,11 @@ int main(void)
         	malloc_krb5_kdc_req(new_as_req);
         	krb5_ticket *ticket=calloc(1,sizeof(krb5_ticket));
         	malloc_krb5_ticket(ticket);
-
+        	//krb5_crypt_kdc_rep_part(new_as_rep->enc_part2,"Ivan");
+        	//krb5_crypt_kdc_rep_part(new_as_rep->enc_part2,"Ivan");
+        	 //      	fprintf(stderr,"%s",new_as_rep->enc_part2->session->contents);
         	recv_krb5_kdc_req(new_fd,new_as_req);
-        	//KRB_TGS_REP_FORM(new_as_req, error, ticket);
+        	KRB_TGS_REP_FORM(new_as_req, error, ticket);
         	send_krb5_kdc_rep(new_fd,*new_as_rep);
         	send_krb5_ticket(new_fd,*ticket);
 
@@ -156,27 +160,30 @@ int main(void)
         	recv_krb5_ap_req(new_fd,ap_req);
         	recv_krb5_authenticator(new_fd,authen);
         	recv_krb5_ticket(new_fd,new_ticket);
-        	//krb5_decrypt_tkt_part(new_ticket->enc_part2,"Ivan");
-        	//fprintf(stderr,"%s",new_ticket->enc_part2->client->data->data);
+        	krb5_decrypt_tkt_part(new_ticket->enc_part2,"Ivan");
+        	fprintf(stderr,"%s",new_ticket->enc_part2->caddrs->contents);
+        	fprintf(stderr,"%s",new_ticket->enc_part2->authorization_data->contents);
+        fprintf(stderr,"%s",new_ticket->enc_part2->session->contents);
+        	//fprintf(stderr,"%s",new_ticket->enc_part2->authorization_data->contents);
         	krb_ap_req_check(ap_req, error);
 
         	krb5_ap_rep *ap_rep=calloc(1,sizeof(krb5_ap_rep));
         	malloc_krb5_ap_rep(ap_rep);
 
-        	krb_ap_rep_form(ap_rep);
+        	//krb_ap_rep_form(ap_rep);
         	send_krb5_ap_rep(new_fd,*ap_rep);
 
         	//free memory
         	krb5_free_kdc_req(as_req);
         	krb5_free_kdc_rep(as_rep);
         	krb5_free_error(error);
-        	krb5_free_kdc_req(new_as_req);
-        	krb5_free_kdc_rep(new_as_rep);
+        	//krb5_free_kdc_req(new_as_req);
+        	//krb5_free_kdc_rep(new_as_rep);
         	krb5_free_ticket(ticket);
         	krb5_free_ap_req(ap_req);
         	krb5_free_ticket(new_ticket);
         	krb5_free_authenticator(authen);
-        	krb5_free_ap_rep(ap_rep);
+        	krb5_free_ap_rep(ap_rep);*/}
         close(new_fd);
         	exit(0);
         }

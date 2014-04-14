@@ -8,7 +8,7 @@
 #include "krb.h"
 #include <stdlib.h>
 #include <openssl/rand.h>
-void change_bit(char *data,int *size);
+void change_bit(char **data,int *size);
 void restore_bit(char *data,int *size);
 void krb5_crypt_enc_data(krb5_enc_data *data,char *pass){
 	char *get_hash=malloc(sizeof(int)*8);
@@ -35,7 +35,7 @@ void krb5_crypt_enc_data(krb5_enc_data *data,char *pass){
 	int l=n_blocks*8;
 					char *out=malloc(l);
 					enc_gost(get_hash,array,out,n_blocks);
-					change_bit(out,&l);
+					change_bit(&out,&l);
 
 	memset(data,0,sizeof(krb5_enc_data));
 		//memcpy(data,out,sizeof(data->enctype)+sizeof(data->kvno));
@@ -43,7 +43,7 @@ void krb5_crypt_enc_data(krb5_enc_data *data,char *pass){
 		data->ciphertext.data=realloc(data->ciphertext.data,l+1);
 		//char *pp=(char *)&data->ciphertext.data;
 		//*pp=(char)new;
-		memcpy(data->ciphertext.data,out,l);
+		memcpy(data->ciphertext.data,out,l+1);
 		memset(data->ciphertext.data+l,0,1);
 	free(get_hash);
 	free(out);
@@ -98,34 +98,36 @@ void krb5_crypt_tkt_part(krb5_enc_tkt_part *data,char *pass){
 		gost_get_hash(pass,get_hash);
 			if(data->authorization_data->contents==NULL)
 			len_enc_data=c;
-			else len_enc_data=c+strlen(data->authorization_data->contents)+1;
+			else len_enc_data=c+strlen(data->authorization_data->contents);
 			int n_blocks=1;
 			while(len_enc_data>8){
 				len_enc_data-=8;
 					  		  n_blocks++;}
 			char *array=malloc(n_blocks*8);
+			memset(array,'\0',n_blocks*8);
 			memcpy(array,bufff,c);
 			if(data->authorization_data->contents!=NULL)
 			memcpy(array+c,data->authorization_data->contents,strlen(data->authorization_data->contents));
 			int l=n_blocks*8;
 							char *out=malloc(l);
 							enc_gost(get_hash,array,out,n_blocks);
-							change_bit(out,&l);
-			krb5_crypt_keyblocks(data->session,pass);
-			krb5_crypt_address(data->caddrs,pass);
-			krb5_crypt_principal_data(data->client,pass);
-			krb5_crypt_transited(&data->transited,pass);
+							change_bit(&out,&l);
+
 			memset(data->authorization_data,0,sizeof(krb5_authdata));
 				//memcpy(data,out,sizeof(data->enctype)+sizeof(data->kvno));
 				//memcpy(&data->ciphertext,out+sizeof(data->enctype)+sizeof(data->kvno),sizeof(data->ciphertext.length)+sizeof(data->ciphertext.magic));
 			data->authorization_data->contents=realloc(data->authorization_data->contents,l+1);
 				//char *pp=(char *)&data->ciphertext.data;
 				//*pp=(char)new;
-				memcpy(data->authorization_data->contents,out,l);
+				memcpy(data->authorization_data->contents,out,l+1);
 				memset(data->authorization_data->contents+l,0,1);
 			free(get_hash);
 			free(out);
 			free(array);
+			krb5_crypt_keyblocks(data->session,pass);
+						krb5_crypt_address(data->caddrs,pass);
+						krb5_crypt_principal_data(data->client,pass);
+						krb5_crypt_transited(&data->transited,pass);
 
 
 		}
@@ -140,19 +142,20 @@ void krb5_crypt_keyblocks(krb5_keyblock *data,char *pass){
 		gost_get_hash(pass,get_hash);
 			if(data->contents==NULL)
 			len_enc_data=c;
-			else len_enc_data=c+strlen(data->contents)+1;
+			else len_enc_data=c+strlen(data->contents);
 			int n_blocks=1;
 			while(len_enc_data>8){
 				len_enc_data-=8;
 					  		  n_blocks++;}
 			char *array=malloc(n_blocks*8);
+			memset(array,'\0',n_blocks*8);
 			memcpy(array,bufff,c);
 			if(data->contents!=NULL)
 			memcpy(array+c,data->contents,strlen(data->contents));
 			int l=n_blocks*8;
 							char *out=malloc(l);
 							enc_gost(get_hash,array,out,n_blocks);
-							change_bit(out,&l);
+							change_bit(&out,&l);
 
 			memset(data,0,sizeof(krb5_keyblock));
 				//memcpy(data,out,sizeof(data->enctype)+sizeof(data->kvno));
@@ -160,7 +163,7 @@ void krb5_crypt_keyblocks(krb5_keyblock *data,char *pass){
 				data->contents=realloc(data->contents,l+1);
 				//char *pp=(char *)&data->ciphertext.data;
 				//*pp=(char)new;
-				memcpy(data->contents,out,l);
+				memcpy(data->contents,out,l+1);
 				memset(data->contents+l,0,1);
 			free(get_hash);
 			free(out);
@@ -208,19 +211,26 @@ void krb5_crypt_address(krb5_address *data,char *pass){
 		gost_get_hash(pass,get_hash);
 			if(data->contents==NULL)
 			len_enc_data=c;
-			else len_enc_data=c+strlen(data->contents)+1;
+			else len_enc_data=c+strlen(data->contents);
 			int n_blocks=1;
 			while(len_enc_data>8){
 				len_enc_data-=8;
 					  		  n_blocks++;}
 			char *array=malloc(n_blocks*8);
+			memset(array,'\0',n_blocks*8);
 			memcpy(array,bufff,c);
 			if(data->contents!=NULL)
 			memcpy(array+c,data->contents,strlen(data->contents));
 			int l=n_blocks*8;
-							char *out=malloc(l);
-							enc_gost(get_hash,array,out,n_blocks);
-							change_bit(out,&l);
+			char *out3=malloc(l);
+			memset(out3,'\0',l);
+			enc_gost(get_hash,array,out3,n_blocks);
+			//int i=0;
+			change_bit(&out3,&l);
+			//strncpy(buff,data,size);
+
+			//restore_bit(out3,&l);
+			//dec_gost(get_hash,out3,&array,n_blocks);
 
 			memset(data,0,sizeof(krb5_address));
 				//memcpy(data,out,sizeof(data->enctype)+sizeof(data->kvno));
@@ -228,10 +238,10 @@ void krb5_crypt_address(krb5_address *data,char *pass){
 				data->contents=realloc(data->contents,l+1);
 				//char *pp=(char *)&data->ciphertext.data;
 				//*pp=(char)new;
-				memcpy(data->contents,out,l);
+				memcpy(data->contents,out3,l+1);
 				memset(data->contents+l,0,1);
 			free(get_hash);
-			free(out);
+			free(out3);
 			free(array);
 }
 void krb5_decrypt_address(krb5_address *data,char *pass){
@@ -243,7 +253,8 @@ void krb5_decrypt_address(krb5_address *data,char *pass){
 				while(len_enc_data>8){
 					len_enc_data-=8;
 						  		  n_blocks++;}
-				char *array=malloc(n_blocks*8);
+				char *array=malloc(n_blocks*8+1);
+				memset(array,'\0',n_blocks*8+1);
 				memcpy(array,data->contents,n_blocks*8);
 				gost_get_hash(pass,get_hash);
 				char *out=malloc(n_blocks*8);
@@ -310,9 +321,9 @@ void krb5_crypt_principal_data(krb5_principal_data *data,char *pass){
 				char *out=malloc(l);
 								char *out2=malloc(l2);
 								enc_gost(get_hash,array,out,n_blocks);
-								change_bit(out,&l);
+								change_bit(&out,&l);
 								enc_gost(get_hash,array2,out2,n_blockd);
-								change_bit(out2,&l2);
+								change_bit(&out2,&l2);
 				memset(data->data,0,sizeof(krb5_data));
 				memset(data,0,sizeof(krb5_principal_data));
 
@@ -321,10 +332,10 @@ void krb5_crypt_principal_data(krb5_principal_data *data,char *pass){
 					//char *pp=(char *)&data->ciphertext.data;
 					//*pp=(char)new;
 					memcpy(data->realm.data,out,l+1);
-					memset(data->realm.data+l+1,0,1);
+					memset(data->realm.data+l,0,1);
 					data->data->data=malloc(l2+1);
 					memcpy(data->data->data,out2,l2+1);
-					memset(data->data->data+l2+1,0,1);
+					memset(data->data->data+l2,0,1);
 				free(get_hash);
 				free(out);
 				free(array);
@@ -413,7 +424,7 @@ void krb5_crypt_transited(krb5_transited *data,char *pass){
 			int l=n_blocks*8;
 							char *out=malloc(l);
 							enc_gost(get_hash,array,out,n_blocks);
-							change_bit(out,&l);
+							change_bit(&out,&l);
 
 			memset(data,0,sizeof(krb5_transited));
 				//memcpy(data,out,sizeof(data->enctype)+sizeof(data->kvno));
@@ -421,8 +432,8 @@ void krb5_crypt_transited(krb5_transited *data,char *pass){
 			data->tr_contents.data=realloc(data->tr_contents.data,l+1);
 				//char *pp=(char *)&data->ciphertext.data;
 				//*pp=(char)new;
-				memcpy(data->tr_contents.data,out,l);
-				memset(data->tr_contents.data+l+1,0,1);
+				memcpy(data->tr_contents.data,out,l+1);
+				memset(data->tr_contents.data+l,0,1);
 				data->magic=0;
 				data->tr_type=0;
 				data->tr_contents.magic=0;
@@ -510,6 +521,7 @@ void krb5_decrypt_tkt_part(krb5_enc_tkt_part *data,char *pass){
 void krb5_crypt_kdc_rep_part(krb5_enc_kdc_rep_part *data,char *pass){
 	char *get_hash=malloc(sizeof(int)*8);
 			int len_enc_data=0;
+			data->session->contents="Hello";
 			char bufff[512];
 			int c=snprintf(bufff,512,"%d ",data->magic);
 			c=snprintf(bufff+c,512-c,"%d ",data->msg_type)+c;
@@ -544,7 +556,7 @@ void krb5_crypt_kdc_rep_part(krb5_enc_kdc_rep_part *data,char *pass){
 				int l=n_blocks*8;
 				char *out=malloc(l);
 				enc_gost(get_hash,array,out,n_blocks);
-				change_bit(out,&l);
+				change_bit(&out,&l);
 				//fprintf(stderr,"%d",(int)strlen(out));
 				//restore_bit(out,&l);
 				//char *array2=malloc(l);
@@ -558,7 +570,7 @@ void krb5_crypt_kdc_rep_part(krb5_enc_kdc_rep_part *data,char *pass){
 				data->session->contents=realloc(data->session->contents,l+1);
 					//char *pp=(char *)&data->ciphertext.data;
 					//*pp=(char)new;
-					memcpy(data->session->contents,out,l);
+					memcpy(data->session->contents,out,l+1);
 					memset(data->session->contents+l,0,1);
 					//fprintf(stderr,"%d",(int)strlen(data->session->contents));
 					data->magic=0;
@@ -589,7 +601,8 @@ void krb5_decrypt_kdc_rep_part(krb5_enc_kdc_rep_part *data,char *pass){
 			while(len_enc_data>8){
 				len_enc_data-=8;
 				  		  n_blocks++;}
-			char *array=malloc(n_blocks*8);
+			char *array=malloc(n_blocks*8+1);
+			memset(array,'\0',n_blocks*8+1);
 			memcpy(array,data->session->contents,n_blocks*8);
 			gost_get_hash(pass,get_hash);
 			char *out=malloc(n_blocks*8);
@@ -668,8 +681,8 @@ void krb5_crypt_ap_rep_enc_part(krb5_ap_rep_enc_part *data,char *pass){
 					data->subkey->contents=realloc(data->subkey->contents,n_blocks*8+1);
 						//char *pp=(char *)&data->ciphertext.data;
 						//*pp=(char)new;
-						memcpy(data->subkey->contents,out,n_blocks*8);
-						memset(data->subkey->contents+n_blocks*8+1,0,1);
+						memcpy(data->subkey->contents,out,n_blocks*8+1);
+						memset(data->subkey->contents+n_blocks*8,0,1);
 					free(get_hash);
 					free(out);
 					free(array);
@@ -712,32 +725,42 @@ void krb5_decrypt_ap_rep_enc_part(krb5_ap_rep_enc_part *data,char *pass){
 				free(out);
 				free(array);
 		}
-void change_bit(char *data,int *size){
+void change_bit(char **data,int *size){
 
 	int l=(*size);
-	//char buff[l+100];
+	char buff[l+100];
 	//strncpy(buff,data,size);
 	int i=0,j=0;
 	for(;i<l;i++,j++){
-		if(data[i]=='\0')
-			data[i]='f';
+		if((*data)[i]=='\0'){
+			buff[j]='c';
+		j++;buff[j]='c';}
+		else buff[j]=(*data)[i];
 	}
+	buff[j]='\0';
 	(*size)=j;
+	free(*data);
+	*data=malloc(j+1);
+	strcpy((*data),buff);
 
 }
 void restore_bit(char *data,int *size){
 	int l=*size;
-	//char buff[l+3];
+	char buff[l+3];
 		//strncpy(buff,data,size);
-		int i=0;
-		for(;i<l;i++){
-			if(data[i]=='f'){
-				data[i]='\0';}
+		int i=0,c=0,k=1;
+		for(;i<l;i++,c++,k++){
+			if(data[c]=='c' && data[k]=='c'){
+				buff[i]='\0';
+			c++;k++;l--;}
+			else buff[i]=data[c];
 		}
-		//free(data);
+		buff[i]='\0';
 		(*size)=i;
-		//data=malloc(i);
-		//strcpy(data,buff);
+		free(data);
+		data=malloc(i+1);
+		memcpy(data,buff,i+1);
+
 }
 void generate_session_key(unsigned char *session_key,int size){
 

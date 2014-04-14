@@ -225,7 +225,7 @@ void recv_krb5_ticket(int new_fd,krb5_ticket *as_rep){
 }
 
 
-void recv_krb5_kdc_req(int new_fd,krb5_kdc_req *as_rep){
+void recv_krb5_kdc_req(int new_fd,krb5_kdc_req *as_rep,krb5_error *error){
 //date sync
 
 	if (recv(new_fd, &as_rep->magic,sizeof(as_rep->magic) , 0) == -1){
@@ -235,6 +235,10 @@ void recv_krb5_kdc_req(int new_fd,krb5_kdc_req *as_rep){
 	if (recv(new_fd, &as_rep->msg_type,sizeof(as_rep->msg_type) , 0) == -1){
 		                   perror("recv2");}
 	as_rep->msg_type=ntohl(as_rep->msg_type);
+	if(as_rep->msg_type==KRB5_ERROR){
+				recv_krb5_error(new_fd,error);
+				error->magic=as_rep->magic;}
+		else{
 	recv_padata(new_fd,as_rep->padata);
 	if (recv(new_fd, &as_rep->kdc_options,sizeof(as_rep->kdc_options) , 0) == -1){
 			                   perror("recv3");}
@@ -271,4 +275,4 @@ void recv_krb5_kdc_req(int new_fd,krb5_kdc_req *as_rep){
 	recv_krb5_address(new_fd,as_rep->addresses);
 	recv_krb5_authdata(new_fd,as_rep->unenc_authdata);
 	recv_krb5_enc_data(new_fd ,&as_rep->authorization_data);
-	recv_krb5_ticket(new_fd,as_rep->second_ticket);}
+	recv_krb5_ticket(new_fd,as_rep->second_ticket);}}

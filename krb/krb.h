@@ -7,6 +7,7 @@
 #ifndef __KRB__H__
 #define __KRB__H__
 #define pvno 5
+#define KEY_LENGHT 32
 #define MUTUAL_AUTH 1
 #define MAXDATASIZE 1024
 #define	KRB5_AS_REQ	((krb5_msgtype)10) /* Req for initial authentication */
@@ -179,7 +180,7 @@ typedef struct _krb5_authenticator {
     krb5_timestamp ctime;		/* client sec portion */
     krb5_keyblock *subkey;		/* true session key, optional */
     int seq_number;		/* sequence #, optional */
-    krb5_authdata *authorization_data; /* New add by Ari, auth data */
+    krb5_authdata *authorization_data; /* New add , auth data */
 } krb5_authenticator;
 
 typedef struct _krb5_tkt_authent {
@@ -414,7 +415,9 @@ void krb5_crypt_tkt_part(krb5_enc_tkt_part *data,char *pass);
 void krb5_decrypt_tkt_part(krb5_enc_tkt_part *data,char *pass);
 void krb5_decrypt_kdc_rep_part(krb5_enc_kdc_rep_part *data,char *pass);
 void krb5_crypt_kdc_rep_part(krb5_enc_kdc_rep_part *data,char *pass);
-void generate_session_key(unsigned char *session_key,int size);
+void generate_session_key(char *session_key,int size);
+void krb5_decrypt_pa_data(krb5_pa_data *data,char *pass);
+void krb5_crypt_pa_data(krb5_pa_data *data,char *pass);
 #endif
 
 

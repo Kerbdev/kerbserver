@@ -7,6 +7,8 @@ typedef struct
     int timeout;
     int retries;
     int ticket_lifetime;
+    char *server_realm;
+    char *server_name;
 } configuration;
 int get_config_param(configuration *config);
 

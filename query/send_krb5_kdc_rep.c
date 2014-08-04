@@ -166,7 +166,6 @@ void send_krb5_enc_kdc_rep_part(int new_fd,krb5_enc_kdc_rep_part req){
 	req.magic=htonl(req.magic);
 	if (send(new_fd, &req.magic,sizeof(req.magic) , 0) == -1){
 				                   perror("send");}
-//req.msg_type=99999;
 	req.msg_type=htonl(req.msg_type);
 	if (send(new_fd, &req.msg_type,sizeof(req.msg_type) , 0) == -1){
 						           perror("send");}

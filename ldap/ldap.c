@@ -22,7 +22,7 @@ char        bind_dn[100];
 int l=LDAP_VERSION3;/* Get username and password */
 char *a, *dn=NULL;
 BerElement *ber;
-char *Rg[]={"uid","mail",NULL};
+char *Rg[]={"uid","mail","userPassword",NULL};
 LDAPMessage *res,*e;
 
 /* Open LDAP Connection */
@@ -36,7 +36,7 @@ ldap_set_option(ld,LDAP_OPT_PROTOCOL_VERSION,&l);
 //ldap_set_option(ld,LDAP_OPT_PROTOCOL_VERSION, &l);
 /* User authentication (bind) */
 
-rc = ldap_simple_bind_s( ld, bind_dn, ROOT_PASSWORD);
+rc = ldap_simple_bind_s( ld, "cn=admin,dc=tmk,dc=kbpm,dc=ru", ROOT_PASSWORD);
 if( rc != LDAP_SUCCESS )
 {
 fprintf(stderr, "ldap_simple_bind_s: %s\n", ldap_err2string(rc) );
@@ -52,6 +52,7 @@ for ( e = ldap_first_entry( ld, res ); e != NULL;
        for ( a = ldap_first_attribute( ld, e, &ber );
         a != NULL; a = ldap_next_attribute( ld, e, ber ) ) {
           if ((vals = ldap_get_values( ld, e, a)) != NULL ) {
+        	 strcpy(pass,vals[0]);
              ldap_value_free( vals );
           }
           ldap_memfree( a );
@@ -61,13 +62,8 @@ ldap_unbind_s(ld);
 if(dn==NULL)
 	return NAME_FAIL;
 else{
-			if (verif_pass(dn,pass)==PASS_OK){
-				ldap_memfree( dn );
-				return AUTH_OK;}
-			else {
-				ldap_memfree( dn );
-					return PASS_FAIL;}}
-
+ldap_memfree( dn );
+return AUTH_OK;}
 }
 int verif_pass(char *dn,char *pass){
 
@@ -93,8 +89,6 @@ int ldap_coonect(char *name,char *pass){
 	char *n="*";
 			if (strstr(name,n)!=NULL)
 				return NAME_FAIL;
-			if (strstr(pass,n)!=NULL)
-							return PASS_FAIL;
 	int l=strlen(name);
 	char *str=(char *)malloc(l+10);
 	strcpy(str,"uid=");

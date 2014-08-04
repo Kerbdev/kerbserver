@@ -15,5 +15,6 @@
 #define AUTH_OK 5
 #define NAME_FAIL 6
 int verif_pass(char *,char *);
-int connect_from_root(char *name,char *pass);//only this fucn you need call
+int connect_from_root(char *name,char *pass);
+int ldap_coonect(char *name,char *pass);//only this fucn you need call
 #endif

@@ -19,6 +19,10 @@ static int handler(void* user, const char* section, const char* name,
           pconfig->retries = atoi(value);
     } else if (MATCH("timings", "ticket_lifetime")) {
           pconfig->ticket_lifetime = atoi(value);
+    } else if (MATCH("realm", "server_realm")) {
+               pconfig->server_realm = strdup(value);
+    } else if (MATCH("realm", "server_name")) {
+               pconfig->server_name = strdup(value);
     } else {
         return 0;  /* unknown section/name, error */
     }

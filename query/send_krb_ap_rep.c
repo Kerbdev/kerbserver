@@ -29,7 +29,6 @@ void send_krb5_ap_rep_enc_part(int sockfd,krb5_ap_rep_enc_part req){
 
 
 void send_krb5_ap_rep(int sockfd,krb5_ap_rep req){
-	req.magic=999;
 	req.magic=ntohl(req.magic);
 
 	if (send(sockfd, &req.magic,sizeof(req.magic) , 0) == -1){

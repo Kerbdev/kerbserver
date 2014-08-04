@@ -28,9 +28,11 @@
 #define SET_ONE 1
 #define USE_SESSION_KEY 1
 #define MUTUAL_REQURED 2
-
-
+#include "../krb/krb.h"
+#include <string.h>
+#include <stdlib.h>
+void make_copy_enc_part(krb5_enc_kdc_rep_part *d,krb5_enc_tkt_part *s);
 int int_to_bit(unsigned int,int);
-void set_bit(int *,int ,int);
+void set_bit(unsigned int *,int ,int);
 int min(int a, ...);
 #endif /* USEFULL_H_ */

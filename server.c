@@ -1,8 +1,7 @@
-#include "Encode/base64.h"
 #include "database/log.h"
 #include "database/user_pass.h"
 #include "query/request.h"
-#include "message/message.h"
+#include "mess/mess.h"
 #include "dynamic/dynamic.h"
 #define PORT "3490"  // порт, на который будут приходить соединения
 
@@ -116,17 +115,34 @@ int main(void)
         if (!fork()) { // тут начинается дочерний процесс
         	close(sockfd);// дочернему процессу не нужен слушающий сокет
         	int i=0;
-        	for(;i<conf.retries;i++){
-        	/*//malloc memory for krb5_kdc_req and recive
+
+        	//malloc memory for krb5_kdc_req and recive
         	krb5_kdc_req *as_req=calloc(1,sizeof(krb5_kdc_req));
         	malloc_krb5_kdc_req(as_req);
-        	recv_krb5_kdc_req(new_fd,as_req);
+
+
          	krb5_error *error=calloc(1,sizeof(krb5_error));
         	malloc_krb5_error(error);
-
+        	recv_krb5_kdc_req(new_fd,as_req,error);
         	//malloc memory for krb5_as_rep and send to client
         	krb5_kdc_rep *as_rep=calloc(1,sizeof(krb5_kdc_rep));
         	malloc_krb5_kdc_rep(as_rep);
+        	check_krb5_as_req_and_imp_krb5_as_rep(as_req,as_rep,&conf);
+        	send_krb5_kdc_rep(new_fd,*as_rep);
+
+        	krb5_kdc_req *tgs_req=calloc(1,sizeof(krb5_kdc_req));
+        	malloc_krb5_kdc_req(tgs_req);
+        	recv_krb5_kdc_req(new_fd,tgs_req,error);
+        	krb5_kdc_rep *new_as_rep=calloc(1,sizeof(krb5_kdc_rep));
+        	malloc_krb5_kdc_rep(new_as_rep);
+
+
+        	check_krb5_tgs_req_and_imp_krb5_tgs_rep(tgs_req,new_as_rep,&conf);
+        	send_krb5_kdc_rep(new_fd,*new_as_rep);
+
+
+        	//check_krb5_as_req_and_imp_krb5_as_rep(krb5_kdc_req *as_req,krb5_kdc_rep *as_rep,configuration *config )
+        	/*
         	//KRB_AS_REP(conf,as_rep,as_req, as_req->padata,error);//if error send KRB5_ERRO
     		//fprintf(stderr,"%s",as_rep->client->data->data);
 
@@ -183,11 +199,10 @@ int main(void)
         	krb5_free_ap_req(ap_req);
         	krb5_free_ticket(new_ticket);
         	krb5_free_authenticator(authen);
-        	krb5_free_ap_rep(ap_rep);*/}
+        	krb5_free_ap_rep(ap_rep);*/
         close(new_fd);
-        	exit(0);
-        }
-        close(new_fd);  // а этот сокет больше не нужен родителю
+        exit(0);
     }
-    return 0;
 }
+    close(sockfd);
+    return 0;}
